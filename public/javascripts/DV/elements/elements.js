@@ -16,7 +16,7 @@ DV.Schema.elements =
   { name: 'annotations',        query: 'div.DV-allAnnotations'},
   { name: 'navigation',         query: 'div.DV-navigation' },
   { name: 'chaptersContainer',  query: 'div.DV-chaptersContainer' },
-  { name: 'searchInput',        query: 'input.DV-searchInput' },
+  { name: 'searchInput',        query: 'input.DV-searchInput',      outsideOfViewer: true},
   { name: 'textCurrentPage',    query: 'span.DV-textCurrentPage' },
   { name: 'coverPages',         query: 'div.DV-cover' },
   { name: 'fullscreen',         query: 'div.DV-fullscreen' }

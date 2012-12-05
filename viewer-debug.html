@@ -76,9 +76,12 @@
 
 <div id="document-viewer"></div>
 <script type="text/javascript">
-  window.currentDocument = DV.load(
-    'http://www.documentcloud.org/documents/96522-torrance-statement-on-crime-map.js',
-    {container: '#document-viewer'}
+  var viewer = DV.load(
+    '19864-goldman-sachs-internal-emails.json',
+    {
+        container: '#document-viewer',
+        sidebar: false
+    }
   );
 </script>
 

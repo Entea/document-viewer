@@ -20,22 +20,45 @@
 </head>
 <body>
 
-<div id="DV-container">
-
-  <div class="DV-loadingDocument"><span>Loading</span></div>
-  <noscript>
-    <div id="DV-noJS">
-      The Document Viewer requires that you enable Javascript.
-    </div>
-  </noscript>
-
+<div class="DV-zoomControls">
+    <span class="DV-zoomLabel">Zoom</span>
+    <div class="DV-zoomBox"></div>
 </div>
 
+
+  <div class="DV-searchBox DV-clearfix">
+    <form action="#" method="get" class="DV-searchDocument">
+      <div class="DV-searchInputWrap">
+        <div class="DV-searchInput-cancel"></div>
+        <input class="DV-searchInput" type="text" autosave="DV-<%= id %>" results="10" placeholder="Search" />
+      </div>
+    </form>
+  </div>
+
+
+<div style="margin-top: 50px;">
+
+    <div id="DV-container">
+
+        <div class="DV-loadingDocument"><span>Loading</span></div>
+        <noscript>
+            <div id="DV-noJS">
+                The Document Viewer requires that you enable Javascript.
+            </div>
+        </noscript>
+
+    </div>
+</div>
+
+<script src="public/assets/jquery.js" type="text/javascript" charset="utf-8"></script>
 <script src="public/assets/viewer.js" type="text/javascript" charset="utf-8"></script>
 <script src="public/assets/templates.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-  DV.load('http://documents.nytimes.com/goldman-sachs-internal-emails.json', { container: '#DV-container' });
+  var viewer = DV.load('19864-goldman-sachs-internal-emails.json', {
+      container: '#DV-container',
+      sidebar: false
+  });
 </script>
 
 </body>

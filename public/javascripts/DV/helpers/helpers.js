@@ -11,7 +11,7 @@ DV.Schema.helpers = {
       var doc       = context.models.document;
       var value     = _.indexOf(doc.ZOOM_RANGES, doc.zoomLevel);
       var viewer    = this.viewer;
-      viewer.slider = viewer.$('.DV-zoomBox').slider({
+      viewer.slider = $('.DV-zoomBox').slider({
         step: 1,
         min: 0,
         max: 4,
@@ -32,41 +32,41 @@ DV.Schema.helpers = {
 
 
       var states = context.states;
-      viewer.$('.DV-navControls').delegate('span.DV-next','click', compiled.next);
-      viewer.$('.DV-navControls').delegate('span.DV-previous','click', compiled.previous);
+      $('.DV-navControls').delegate('span.DV-next','click', compiled.next);
+      $('.DV-navControls').delegate('span.DV-previous','click', compiled.previous);
 
-      viewer.$('.DV-annotationView').delegate('.DV-trigger','click',function(e){
+      $('.DV-annotationView').delegate('.DV-trigger','click',function(e){
         e.preventDefault();
         context.open('ViewAnnotation');
       });
-      viewer.$('.DV-documentView').delegate('.DV-trigger','click',function(e){
+      $('.DV-documentView').delegate('.DV-trigger','click',function(e){
         // history.save('document/p'+context.models.document.currentPage());
         context.open('ViewDocument');
       });
-      viewer.$('.DV-thumbnailsView').delegate('.DV-trigger','click',function(e){
+      $('.DV-thumbnailsView').delegate('.DV-trigger','click',function(e){
         context.open('ViewThumbnails');
       });
-      viewer.$('.DV-textView').delegate('.DV-trigger','click',function(e){
+      $('.DV-textView').delegate('.DV-trigger','click',function(e){
 
         // history.save('text/p'+context.models.document.currentPage());
         context.open('ViewText');
       });
-      viewer.$('.DV-allAnnotations').delegate('.DV-annotationGoto .DV-trigger','click', DV.jQuery.proxy(this.gotoPage, this));
+      $('.DV-allAnnotations').delegate('.DV-annotationGoto .DV-trigger','click', DV.jQuery.proxy(this.gotoPage, this));
 
-      viewer.$('form.DV-searchDocument').submit(this.events.compile('search'));
-      viewer.$('.DV-searchBar').delegate('.DV-closeSearch','click',function(e){
+      $('form.DV-searchDocument').submit(this.events.compile('search'));
+      $('.DV-searchBar').delegate('.DV-closeSearch','click',function(e){
         e.preventDefault();
         // history.save('text/p'+context.models.document.currentPage());
         context.open('ViewText');
       });
-      viewer.$('.DV-searchBox').delegate('.DV-searchInput-cancel', 'click', DV.jQuery.proxy(this.clearSearch, this));
+      $('.DV-searchBox').delegate('.DV-searchInput-cancel', 'click', DV.jQuery.proxy(this.clearSearch, this));
 
-      viewer.$('.DV-searchResults').delegate('span.DV-resultPrevious','click', DV.jQuery.proxy(this.highlightPreviousMatch, this));
+      $('.DV-searchResults').delegate('span.DV-resultPrevious','click', DV.jQuery.proxy(this.highlightPreviousMatch, this));
 
-      viewer.$('.DV-searchResults').delegate('span.DV-resultNext','click', DV.jQuery.proxy(this.highlightNextMatch, this));
+      $('.DV-searchResults').delegate('span.DV-resultNext','click', DV.jQuery.proxy(this.highlightNextMatch, this));
 
       // Prevent navigation elements from being selectable when clicked.
-      viewer.$('.DV-trigger').bind('selectstart', function(){ return false; });
+      $('.DV-trigger').bind('selectstart', function(){ return false; });
 
       this.elements.viewer.delegate('.DV-fullscreen', 'click', _.bind(this.openFullScreen, this));
 
@@ -88,8 +88,8 @@ DV.Schema.helpers = {
       collection.delegate('.DV-permalink', 'click', _.bind(this.permalinkAnnotation, this));
 
       // Thumbnails
-      viewer.$('.DV-thumbnails').delegate('.DV-thumbnail-page', 'click', function(e) {
-        var $thumbnail = viewer.$(e.currentTarget);
+      $('.DV-thumbnails').delegate('.DV-thumbnail-page', 'click', function(e) {
+        var $thumbnail = $(e.currentTarget);
         if (!viewer.openEditor) {
           var pageIndex = $thumbnail.closest('.DV-thumbnail').attr('data-pageNumber') - 1;
           viewer.models.document.setPageIndex(pageIndex);
@@ -107,19 +107,19 @@ DV.Schema.helpers = {
       this.elements.well[0].ontouchmove     = this.touchMove;
       this.elements.well[0].ontouchend      = this.touchEnd;
 
-      viewer.$('.DV-descriptionToggle').live('click',function(e){
+      $('.DV-descriptionToggle').live('click',function(e){
         e.preventDefault();
         e.stopPropagation();
 
-        viewer.$('.DV-descriptionText').toggle();
-        viewer.$('.DV-descriptionToggle').toggleClass('DV-showDescription');
+        $('.DV-descriptionText').toggle();
+        $('.DV-descriptionToggle').toggleClass('DV-showDescription');
       });
 
       var cleanUp = DV.jQuery.proxy(viewer.pageSet.cleanUp, this);
 
       this.elements.window.live('mousedown',
         function(e){
-          var el = viewer.$(e.target);
+          var el = $(e.target);
           if (el.parents().is('.DV-annotation') || el.is('.DV-annotation')) return true;
           if(context.elements.window.hasClass('DV-coverVisible')){
             if((el.width() - parseInt(e.clientX,10)) >= 15){
@@ -256,7 +256,7 @@ DV.Schema.helpers = {
       if (mode == 'text') {
         var number  = this.viewer.models.document.currentPage();
       } else {
-        var pageId  = this.viewer.$(e.target).closest('.DV-set').attr('data-id');
+        var pageId  = this.$(e.target).closest('.DV-set').attr('data-id');
         var page    = this.viewer.pageSet.pages[pageId];
         var number  = page.pageNumber;
         this.jump(page.index);
@@ -266,7 +266,7 @@ DV.Schema.helpers = {
 
     // Click to open an annotation's permalink.
     permalinkAnnotation : function(e) {
-      var id   = this.viewer.$(e.target).closest('.DV-annotation').attr('data-id');
+      var id   = this.$(e.target).closest('.DV-annotation').attr('data-id');
       var anno = this.viewer.models.annotations.getAnnotation(id);
       var sid  = anno.server_id || anno.id;
       if (this.viewer.state == 'ViewDocument') {
@@ -302,7 +302,7 @@ DV.Schema.helpers = {
 
     gotoPage: function(e){
       e.preventDefault();
-      var aid           = this.viewer.$(e.target).parents('.DV-annotation').attr('rel').replace('aid-','');
+      var aid           = this.$(e.target).parents('.DV-annotation').attr('rel').replace('aid-','');
       var annotation    = this.models.annotations.getAnnotation(aid);
       var viewer        = this.viewer;
 
