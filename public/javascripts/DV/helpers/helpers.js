@@ -401,7 +401,7 @@ DV.Schema.helpers = {
 
         if (argHash.deltaX != 0) {
             // limits:
-            var leftMax = 22;
+            var leftMax = 0;
             var leftMin = this.elements.window.width() - this.elements.collection.width();
             if (leftMin > leftMax) {
                 leftMin = leftMax;
