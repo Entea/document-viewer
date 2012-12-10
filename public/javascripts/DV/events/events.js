@@ -2,15 +2,17 @@
 DV.Schema.events = {
   // Change zoom level and causes a reflow and redraw of pages.
   zoom: function(level){
-    var viewer = this.viewer;
-    var continuation = function() {
-      viewer.pageSet.zoom({ zoomLevel: level });
-      var ranges = viewer.models.document.ZOOM_RANGES;
-      viewer.dragReporter.sensitivity = ranges[ranges.length-1] == level ? 1.5 : 1;
-      viewer.notifyChangedState();
-      return true;
-    };
-    viewer.confirmStateChange ? viewer.confirmStateChange(continuation) : continuation();
+      var viewer = this.viewer;
+      var continuation = function () {
+          viewer.pageSet.zoom({ zoomLevel: level });
+          var ranges = viewer.models.document.ZOOM_RANGES;
+          viewer.dragReporter.sensitivity = ranges[ranges.length - 1] == level ? 1.5 : 1;
+          viewer.notifyChangedState();
+          return true;
+      };
+      viewer.confirmStateChange ? viewer.confirmStateChange(continuation) : continuation();
+      this.viewer.window.mCustomScrollbar('update');
+      this.viewer.models.document.redrawPages()
   },
 
   // Draw (or redraw) the visible pages on the screen.

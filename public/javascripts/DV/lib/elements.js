@@ -31,8 +31,7 @@ DV.Elements.prototype.scrollerTop = function(top) {
         }
 
         if (this.isScrollerInitialized()) {
-            console.log(top);
-            this.window.mCustomScrollbar('scrollTo', top);
+            this.window.mCustomScrollbar('scrollTo', Math.max(top, 0));
         }
     }
 };

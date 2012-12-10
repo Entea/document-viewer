@@ -398,7 +398,7 @@ DV.Schema.helpers = {
         var scrollTopShift = -(scrollerEl.position().top) + argHash.deltaY;
         var scrollLeftShift = -(scrollerEl.position().left) + argHash.deltaX;
 
-        scrollerEl.css('top', -scrollTopShift);
+        scrollerEl.css('top', Math.min(-scrollTopShift, 0));
         scrollerEl.css('left', -scrollLeftShift);
     },
 
