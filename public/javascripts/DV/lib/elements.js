@@ -52,5 +52,6 @@ DV.Elements.prototype.isScrollerInitialized = function () {
 DV.Elements.prototype.updateZoom = function() {
     if (this.isScrollerInitialized()) {
         this.window.mCustomScrollbar('update');
+        this.collection.css('left', 22);
     }
 }
