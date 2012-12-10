@@ -11,7 +11,7 @@ DV.Schema.events = {
           return true;
       };
       viewer.confirmStateChange ? viewer.confirmStateChange(continuation) : continuation();
-      this.viewer.window.mCustomScrollbar('update');
+      this.viewer.elements.updateZoom();
       this.viewer.models.document.redrawPages()
   },
 

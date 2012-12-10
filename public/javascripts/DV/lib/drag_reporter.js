@@ -37,10 +37,8 @@ DV.DragReporter.prototype.stop         = function() {
     this.toWatch.removeClass(this.dragClassName);
     this.toWatch.unbind('mousemove');
     var top = -(this.viewer.elements.scrlr.position().top);
-    console.log('Before %d', top);
 //    this.viewer.elements.window.mCustomScrollbar('update');
     this.viewer.elements.scrollerTop(top);
-    console.log('After %d', this.viewer.elements.scrollerTop());
 };
 
 DV.DragReporter.prototype.setBinding         = function(){

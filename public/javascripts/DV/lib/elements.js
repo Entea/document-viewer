@@ -48,3 +48,9 @@ DV.Elements.prototype.isScrollerInitialized = function () {
 
     return this.scrollInitialized;
 }
+
+DV.Elements.prototype.updateZoom = function() {
+    if (this.isScrollerInitialized()) {
+        this.window.mCustomScrollbar('update');
+    }
+}
