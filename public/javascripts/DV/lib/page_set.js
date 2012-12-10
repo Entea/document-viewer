@@ -72,7 +72,7 @@ DV.PageSet.prototype.zoom = function(argHash){
   var oldOffset    = this.viewer.models.document.offsets[currentPage];
   var oldZoom      = this.viewer.models.document.zoomLevel*1;
   var relativeZoom = argHash.zoomLevel / oldZoom;
-  var scrollPos    = this.viewer.elements.window.scrollTop();
+  var scrollPos    = this.viewer.elements.scrollerTop();
 
   this.viewer.models.document.zoom(argHash.zoomLevel);
 
@@ -163,7 +163,7 @@ DV.PageSet.prototype.showAnnotation = function(argHash, showHash){
   if(this.viewer.state === 'ViewAnnotation'){
 
     var offset = this.viewer.$('.DV-allAnnotations div[rel=aid-'+argHash.id+']')[0].offsetTop;
-    this.viewer.elements.window.scrollTop(offset+10,'fast');
+    this.viewer.elements.scrollerTop(offset+10);
     this.viewer.helpers.setActiveAnnotationInNav(argHash.id);
     this.viewer.activeAnnotationId = argHash.id;
     // this.viewer.history.save('annotation/a'+argHash.id);

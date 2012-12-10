@@ -14,20 +14,21 @@ DV.Schema.events = {
   },
 
   // Draw (or redraw) the visible pages on the screen.
-  drawPages: function() {
-    if (this.viewer.state != 'ViewDocument') return;
-    var doc           = this.models.document;
-    var win           = this.elements.window[0];
-    var offsets       = doc.baseHeightsPortionOffsets;
-    var scrollPos     = this.viewer.scrollPosition = win.scrollTop;
-    var midpoint      = scrollPos + (this.viewer.$(win).height() / 3);
-    var currentPage   = _.sortedIndex(offsets, scrollPos);
-    var middlePage    = _.sortedIndex(offsets, midpoint);
-    if (offsets[currentPage] == scrollPos) currentPage++ && middlePage++;
-    var pageIds       = this.helpers.sortPages(middlePage - 1);
-    var total         = doc.totalPages;
-    if (doc.currentPage() != currentPage) doc.setPageIndex(currentPage - 1);
-    this.drawPageAt(pageIds, middlePage - 1);
+  drawPages: function () {
+      if (this.viewer.state != 'ViewDocument') return;
+      var doc = this.models.document;
+      var win = this.elements.window[0];
+      var offsets = doc.baseHeightsPortionOffsets;
+      var scrollTop = this.viewer.elements.scrollerTop();
+      var scrollPos = this.viewer.scrollPosition = scrollTop;
+      var midpoint = scrollPos + (this.viewer.$(win).height() / 3);
+      var currentPage = _.sortedIndex(offsets, scrollPos);
+      var middlePage = _.sortedIndex(offsets, midpoint);
+      if (offsets[currentPage] == scrollPos) currentPage++ && middlePage++;
+      var pageIds = this.helpers.sortPages(middlePage - 1);
+      var total = doc.totalPages;
+      if (doc.currentPage() != currentPage) doc.setPageIndex(currentPage - 1);
+      this.drawPageAt(pageIds, middlePage - 1);
   },
 
   // Draw the page at the given index.
@@ -107,7 +108,7 @@ DV.Schema.events = {
   trackAnnotation: function(){
     var viewer          = this.viewer;
     var helpers         = this.helpers;
-    var scrollPosition  = this.elements.window[0].scrollTop;
+    var scrollPosition  = scrollTop = this.viewer.elements.scrollerTop();
 
     if(viewer.activeAnnotation){
       var annotation      = viewer.activeAnnotation;

@@ -33,9 +33,14 @@ DV.DragReporter.prototype.oldPositionUpdater   = function(){
   this.oldPageY = this.pageY;
 };
 
-DV.DragReporter.prototype.stop         = function(){
-  this.toWatch.removeClass(this.dragClassName);
-  this.toWatch.unbind('mousemove');
+DV.DragReporter.prototype.stop         = function() {
+    this.toWatch.removeClass(this.dragClassName);
+    this.toWatch.unbind('mousemove');
+    var top = -(this.viewer.elements.scrlr.position().top);
+    console.log('Before %d', top);
+//    this.viewer.elements.window.mCustomScrollbar('update');
+    this.viewer.elements.scrollerTop(top);
+    console.log('After %d', this.viewer.elements.scrollerTop());
 };
 
 DV.DragReporter.prototype.setBinding         = function(){
@@ -61,7 +66,6 @@ DV.DragReporter.prototype.mouseDownReporter   = function(e){
   this.oldPageY = e.pageY;
 
   this.updateTimer = setInterval(_.bind(this.oldPositionUpdater,this),1200);
-
   this.toWatch.addClass(this.dragClassName);
   this.toWatch.mousemove(this.boundReporter);
 };

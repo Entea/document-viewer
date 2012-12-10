@@ -61,6 +61,14 @@ _.extend(DV.Schema.helpers, {
     var containerEl = DV.jQuery(container);
     if (!containerEl.length) throw "Document Viewer container element not found: " + container;
     containerEl.html(JST.viewer(viewerOptions));
+      this.viewer.$(".DV-pages").mCustomScrollbar({
+          scrollInertia: 0,
+          scrollAmount: 20,
+          advanced:{
+              updateOnBrowserResize:true,
+              updateOnContentResize:true
+          }
+      });
   },
 
   // If there is no description, no navigation, and no sections, tighten up
@@ -266,7 +274,7 @@ _.extend(DV.Schema.helpers, {
     this.viewer.pageSet.cleanUp();
     this.removeObserver('drawPages');
     this.viewer.dragReporter.unBind();
-    this.elements.window.scrollTop(0);
+//    this.viewer.elements.scrollerTop(0);
   }
 
 });

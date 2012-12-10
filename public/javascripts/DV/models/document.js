@@ -71,7 +71,7 @@ DV.model.Document.prototype = {
     var adjustedOffset   = 0;
     var len              = this.totalPages;
     var diff             = 0;
-    var scrollPos        = this.viewer.elements.window[0].scrollTop;
+    var scrollPos        = this.viewer.elements.scrollerTop();
 
     for(var i = 0; i < len; i++) {
       if(annotationModel.offsetsAdjustments[i]){

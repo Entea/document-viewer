@@ -1,7 +1,6 @@
 /* DocumentCloud overrides to the DocViewer CSS go here: */
 
 .DV-docViewer {
-  border: 1px solid #aaa;
   line-height: normal;
   position: relative;
   z-index: 0;

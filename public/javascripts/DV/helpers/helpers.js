@@ -278,8 +278,7 @@ DV.Schema.helpers = {
     },
 
     setDocHeight:   function(height,diff) {
-      this.elements.bar.css('height', height);
-      this.elements.window[0].scrollTop += diff;
+        this.elements.bar.css('height', height);
     },
 
     getWindowDimensions: function(){
@@ -297,7 +296,7 @@ DV.Schema.helpers = {
     },
 
     resetScrollState: function(){
-      this.elements.window.scrollTop(0);
+        this.elements.scrollerTop(0);
     },
 
     gotoPage: function(e){
@@ -386,7 +385,7 @@ DV.Schema.helpers = {
     jump: function(pageIndex, modifier, forceRedraw){
       modifier = (modifier) ? parseInt(modifier, 10) : 0;
       var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
-      this.elements.window[0].scrollTop = position;
+        this.elements.scrollerTop(position)
       this.models.document.setPageIndex(pageIndex);
       if (forceRedraw) this.viewer.pageSet.redraw(true);
       if (this.viewer.state === 'ViewThumbnails') {
@@ -394,13 +393,13 @@ DV.Schema.helpers = {
       }
     },
 
-    shift: function(argHash){
-      var windowEl        = this.elements.window;
-      var scrollTopShift  = windowEl.scrollTop() + argHash.deltaY;
-      var scrollLeftShift  = windowEl.scrollLeft() + argHash.deltaX;
+    shift: function(argHash) {
+        var scrollerEl = this.elements.scroller();
+        var scrollTopShift = -(scrollerEl.position().top) + argHash.deltaY;
+        var scrollLeftShift = -(scrollerEl.position().left) + argHash.deltaX;
 
-      windowEl.scrollTop(scrollTopShift);
-      windowEl.scrollLeft(scrollLeftShift);
+        scrollerEl.css('top', -scrollTopShift);
+        scrollerEl.css('left', -scrollLeftShift);
     },
 
     getAppState: function(){

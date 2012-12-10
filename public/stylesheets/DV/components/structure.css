@@ -9,7 +9,7 @@
   top: 0px; bottom: 33px; left: 0px; right: 0px;
   margin: 0;
   overflow: hidden;
-  border: 1px solid #aaa; border-left: 0; border-right: 0;
+  /*border: 1px solid #aaa; border-left: 0; border-right: 0;*/
 }
 
 .DV-printMessage {
@@ -64,7 +64,7 @@
 }
 
 .DV-pages{
-  overflow: auto;
+  overflow: hidden;
   position: absolute;
   left: 0; right: 266px; top: 0; bottom: 0;
   z-index:10001;

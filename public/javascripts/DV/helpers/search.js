@@ -149,7 +149,7 @@ _.extend(DV.Schema.helpers, {
     var match = this.viewer.$('.DV-textContents span.DV-searchMatch:eq('+index+')');
     match.addClass('DV-highlightedMatch');
 
-    this.elements.window[0].scrollTop = match.position().top - 50;
+    this.elements.scrollerTop(match.position().top - 50);
     if (searchResponse) searchResponse.highlighted = index;
 
     // cleanup

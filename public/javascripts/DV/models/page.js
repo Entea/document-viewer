@@ -106,7 +106,8 @@ DV.model.Pages.prototype = {
     this.viewer.pageSet.simpleReflowPages();
     if (!this.viewer.activeAnnotation && (pageIndex < this.viewer.models.document.currentIndex())) {
       var diff = Math.round(height * this.zoomFactor() - h);
-      this.viewer.elements.window[0].scrollTop += diff;
+      var scrollTop = this.viewer.elements.scrollerTop();
+      this.viewer.elements.scrollerTop(scrollTop + diff);
     }
   },
 
