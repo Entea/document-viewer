@@ -396,10 +396,12 @@ DV.Schema.helpers = {
     shift: function(argHash) {
         var scrollerEl = this.elements.scroller();
         var scrollTopShift = -(scrollerEl.position().top) + argHash.deltaY;
-        var scrollLeftShift = -(scrollerEl.position().left) + argHash.deltaX;
+        var left = parseInt(this.elements.collection.css('left'));
+        var scrollLeftShift = left - argHash.deltaX;
+        console.log(left, this.elements.collection.css('left'), argHash.deltaX, scrollLeftShift);
 
         scrollerEl.css('top', Math.min(-scrollTopShift, 0));
-        this.elements.collection.css('left', -scrollLeftShift);
+        this.elements.collection.css('left', scrollLeftShift + 'px');
     },
 
     getAppState: function(){
