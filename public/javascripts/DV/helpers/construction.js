@@ -239,6 +239,7 @@ _.extend(DV.Schema.helpers, {
       });
       this.viewer.$('.DV-navControlsContainer').html(navControls);
     }
+    $('.DV-totalPages').text(this.viewer.schema.data.totalPages);
 
     this.viewer.$('.DV-fullscreenControl').remove();
     if (this.viewer.schema.document.canonicalURL) {
@@ -263,7 +264,7 @@ _.extend(DV.Schema.helpers, {
     }, this));
 
     // Set the currentPage element reference.
-    this.elements.currentPage = this.viewer.$('span.DV-currentPage');
+    this.elements.currentPage = $('span.DV-currentPage');
     this.models.document.setPageIndex(this.models.document.currentIndex());
   },
 
