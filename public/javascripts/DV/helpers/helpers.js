@@ -15,8 +15,11 @@ DV.Schema.helpers = {
             step: 1,
             min: 0,
             max: 4,
-//            orientation: "vertical",
+            orientation: "vertical",
             value: value,
+            create: function(event, ui) {
+                $('.DV-zoomBox').removeClass('DV-zoomBox');
+            },
             slide: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
             },
