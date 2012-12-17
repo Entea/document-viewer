@@ -16,6 +16,7 @@ DV.Schema.helpers = {
             min: 0,
             max: 4,
             orientation: "vertical",
+            isRTL: true,
             value: value,
             create: function(event, ui) {
                 $('.DV-zoomBox').removeClass('DV-zoomBox');
@@ -414,7 +415,6 @@ DV.Schema.helpers = {
             if (leftMin > leftMax) {
                 leftMin = leftMax;
             }
-            console.log(leftMax, leftMin);
             if (scrollLeftShift > leftMax) {
                 scrollLeftShift = leftMax;
             }

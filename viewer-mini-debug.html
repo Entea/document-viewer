@@ -30,7 +30,8 @@
   <link href="public/stylesheets/DV/print.css" media="print" rel="stylesheet" type="text/css" />
 
 <script src="public/javascripts/DV/vendor/jquery-1.5.1.js" type="text/javascript"></script>
-<script src="public/javascripts/DV/vendor/jquery-ui-1.8.1.custom.min.js" type="text/javascript"></script>
+<script src="public/javascripts/DV/vendor/jquery-ui.min.js" type="text/javascript"></script>
+<script src="public/javascripts/DV/vendor/jquery.mCustomScrollbar.js" type="text/javascript"></script>
 <script src="public/javascripts/DV/vendor/underscore.js" type="text/javascript"></script>
 <script src="public/javascripts/DV/vendor/jquery.acceptInput.js" type="text/javascript"></script>
 <script src="public/javascripts/DV/vendor/jquery.placeholder.js" type="text/javascript"></script>
@@ -70,7 +71,9 @@
 </head>
 <body>
 
-<div id="document-viewer"></div>
+<div id="document-viewer">
+
+</div>
 <script type="text/javascript">
 //    'http://www.documentcloud.org/documents/96522-torrance-statement-on-crime-map.js'
   var viewer = DV.load('http://www.documentcloud.org/documents/19864-goldman-sachs-internal-emails.js', {
@@ -78,11 +81,14 @@
     width: 499,
     height: 700,
     sidebar: false,
-    search: false
+    search: true
   });
 </script>
 
-<br /> <br /> <br /> <br />
+<br />
+<input type="text" class="DV-searchInput" />
+
+<br /> <br /> <br />
 
 <!--<div id="document-viewer-2"></div>-->
 <!--<script type="text/javascript">-->
