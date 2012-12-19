@@ -54,4 +54,5 @@ DV.Elements.prototype.updateZoom = function() {
         this.window.mCustomScrollbar('update');
         this.collection.css('left', 0);
     }
+    this.zoomChange && this.zoomChange(this._viewer);
 }
