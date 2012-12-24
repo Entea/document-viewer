@@ -499,30 +499,32 @@ DV.Schema.helpers = {
         var windowWidth = this.elements.window.outerWidth(true);
         var zoom;
         if (this.viewer.options.zoom == 'auto') {
-            zoom = Math.min(700, windowWidth - (this.viewer.models.pages.getPadding() * 2));
+            zoom = Math.min(1000, windowWidth - (this.viewer.models.pages.getPadding() * 2));
         } else {
             zoom = this.viewer.options.zoom;
         }
 
         // Setup ranges for auto-width zooming
         var ranges = [];
-        if (zoom <= 500) {
-            var zoom2 = (zoom + 700) / 2;
-            ranges = [zoom, zoom2, 700, 850, 1000];
-        } else if (zoom <= 750) {
-            var zoom2 = ((1000 - 700) / 3) + zoom;
-            var zoom3 = ((1000 - 700) / 3) * 2 + zoom;
-            ranges = [.66 * zoom, zoom, zoom2, zoom3, 1000];
-        } else if (750 < zoom && zoom <= 850) {
-            var zoom2 = ((1000 - zoom) / 2) + zoom;
-            ranges = [.66 * zoom, 700, zoom, zoom2, 1000];
-        } else if (850 < zoom && zoom < 1000) {
-            var zoom2 = ((zoom - 700) / 2) + 700;
-            ranges = [.66 * zoom, 700, zoom2, zoom, 1000];
-        } else if (zoom >= 1000) {
-            zoom = 1000;
+//        if (zoom <= 500) {
+//            var zoom2 = (zoom + 700) / 2;
+//            ranges = [zoom, zoom2, 700, 850, 1000];
+//        } else if (zoom <= 750) {
+//            var zoom2 = ((1000 - 700) / 3) + zoom;
+//            var zoom3 = ((1000 - 700) / 3) * 2 + zoom;
+//            ranges = [.66 * zoom, zoom, zoom2, zoom3, 1000];
+//        } else if (750 < zoom && zoom <= 850) {
+//            var zoom2 = ((1000 - zoom) / 2) + zoom;
+//            ranges = [.66 * zoom, 700, zoom, zoom2, 1000];
+//        } else if (850 < zoom && zoom < 1000) {
+//            var zoom2 = ((zoom - 700) / 2) + 700;
+//            ranges = [.66 * zoom, 700, zoom2, zoom, 1000];
+//        } else if (zoom >= 1500) {
+            zoom = 800;
             ranges = this.viewer.models.document.ZOOM_RANGES;
-        }
+//        }
+        console.log(zoom, ranges);
+
         this.viewer.models.document.ZOOM_RANGES = ranges;
         this.viewer.slider.slider({'value': parseInt(_.indexOf(ranges, zoom), 10)});
         this.events.zoom(zoom);
