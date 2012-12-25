@@ -31,6 +31,7 @@ DV.Elements.prototype.scrollerTop = function(top) {
         }
 
         if (this.isScrollerInitialized()) {
+            if (top == 0) top = 1; // an ugly hack :(
             this.window.mCustomScrollbar('scrollTo', Math.max(top, 0));
         }
     }
