@@ -31,8 +31,7 @@ DV.Elements.prototype.scrollerTop = function(top) {
         }
 
         if (this.isScrollerInitialized()) {
-            if (top == 0) top = 1; // an ugly hack :(
-            this.window.mCustomScrollbar('scrollTo', Math.max(top, 0));
+            this.window.mCustomScrollbar('scrollTo', Math.max(top, 1));
         }
     }
 };
@@ -50,10 +49,14 @@ DV.Elements.prototype.isScrollerInitialized = function () {
     return this.scrollInitialized;
 }
 
-DV.Elements.prototype.updateZoom = function() {
+DV.Elements.prototype.updateScroller = function() {
     if (this.isScrollerInitialized()) {
         this.window.mCustomScrollbar('update');
         this.collection.css('left', 0);
     }
+}
+
+DV.Elements.prototype.updateZoom = function() {
+    this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer);
 }

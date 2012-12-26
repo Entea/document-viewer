@@ -9,7 +9,7 @@ DV.Schema = function() {
   this.data         = {
     zoomLevel               : 700,
     pageWidthPadding        : 0,
-    additionalPaddingOnPage : 15,
+    additionalPaddingOnPage : 3,
     state                   : { page: { previous: 0, current: 0, next: 1 } }
   };
 };

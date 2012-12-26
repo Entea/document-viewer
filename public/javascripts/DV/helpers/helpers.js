@@ -395,8 +395,6 @@ DV.Schema.helpers = {
         modifier = (modifier) ? parseInt(modifier, 10) : 0;
         var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
 
-        console.log(position);
-
         this.elements.scrollerTop(position);
         this.models.document.setPageIndex(pageIndex);
         if (forceRedraw) this.viewer.pageSet.redraw(true);
@@ -501,6 +499,7 @@ DV.Schema.helpers = {
     autoZoomPage: function () {
         var windowWidth = this.elements.window.outerWidth(true);
         var zoom;
+
         if (this.viewer.options.zoom == 'auto') {
             zoom = Math.min(1000, windowWidth - (this.viewer.models.pages.getPadding() * 2));
         } else {
@@ -515,6 +514,9 @@ DV.Schema.helpers = {
                 zoom = ranges[ i ];
                 break;
             }
+        }
+        if (zoom < ranges[ 0 ]) {
+            zoom = ranges[ 0 ];
         }
 
         this.viewer.models.document.ZOOM_RANGES = ranges;

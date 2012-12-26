@@ -66,6 +66,8 @@ DV.model.Pages.prototype = {
 
     // Return the appropriate padding for the size of the viewer.
     getPadding: function () {
+        return 0; // No padding :)
+
         if (this.viewer.options.mini) {
             return this.MINI_PADDING;
         } else if (this.viewer.options.zoom == 'auto') {
@@ -85,7 +87,7 @@ DV.model.Pages.prototype = {
 
     // Resize or zoom the pages width and height.
     resize: function (zoomLevel) {
-        var padding = this.viewer.models.pages.DEFAULT_PADDING;
+        var padding = 0; // this.viewer.models.pages.DEFAULT_PADDING;
 
         if (zoomLevel) {
             if (zoomLevel == this.zoomLevel) return;
