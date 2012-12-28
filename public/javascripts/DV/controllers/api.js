@@ -330,6 +330,11 @@ DV.Api.prototype = {
   leaveEditPageTextMode : function() {
     this.viewer.openEditor = null;
     this.resetPageText();
+  },
+
+  rotateCurrentPage: function() {
+      this.viewer.models.pages.rotatePage(this.currentPage());
+      this.viewer.pageSet.redraw()
   }
 
 };

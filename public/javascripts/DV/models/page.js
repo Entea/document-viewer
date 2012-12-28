@@ -8,6 +8,7 @@ DV.model.Pages = function (viewer) {
 
     // Real page heights.
     this.pageHeights = [];
+    this.rotatedPages = {};
 
     // Real page note heights.
     this.pageNoteHeights = [];
@@ -52,10 +53,29 @@ DV.model.Pages.prototype = {
         var url = this.viewer.schema.document.resources.page.image;
         var size = this.zoomLevel > this.BASE_WIDTH ? 'large' : 'normal';
         var pageNumber = index + 1;
-        if (this.viewer.schema.document.resources.page.zeropad) pageNumber = this.zeroPad(pageNumber, 5);
+        var rotation = this.rotatedPages[pageNumber] == undefined ? 0 : this.rotatedPages[pageNumber];
+
+        if (this.viewer.schema.document.resources.page.zeropad) {
+            pageNumber = this.zeroPad(pageNumber, 5);
+        }
+
         url = url.replace(/\{size\}/, size);
         url = url.replace(/\{page\}/, pageNumber);
+        url = url.replace(/\{rotation\}/, rotation);
+
         return url;
+    },
+
+    rotatePage: function(pageNumber) {
+        if (this.rotatedPages[pageNumber] == undefined) {
+            this.rotatedPages[pageNumber] = 1;
+        } else {
+            this.rotatedPages[pageNumber]++;
+        }
+
+        if (this.rotatedPages[pageNumber] % 4 == 0) {
+            this.rotatedPages[pageNumber] = 0;
+        }
     },
 
     zeroPad: function (num, count) {

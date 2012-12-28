@@ -69,9 +69,11 @@ Images should be created to match the three sizes required by the viewer:
 * *normal*    : 700px wide
 * *thumbnail* : 180px wide
 
-The document JSON data should have an image template string in the `resources.page.image` section. The template should include `{page}` and `{size}`.
+* rotation: [0, 1, 2, 3] -> rotates by `rotation * 90` degrees
 
-  http://s3.documentcloud.org/documents/19864/pages/goldman-sachs-internal-emails-p{page}-{size}.gif
+The document JSON data should have an image template string in the `resources.page.image` section. The template should include `{page}`, `{size}` and `{orientation}`.
+
+  http://s3.documentcloud.org/documents/19864/pages/goldman-sachs-internal-emails-p{page}-{size}-{rotation}.gif
 
 == Data Formats: Search
 All data should be formatted as JSON. When provided a cross domain url, the Document Viewer will attempt a JSONP request. 
