@@ -15,7 +15,7 @@ _.extend(DV.Schema.events, {
       var pageNumber  = parseInt(annotation.index,10)+1;
 
       if(this.viewer.state === 'ViewText'){
-        this.loadText(annotation.index);
+        this.openTextPage(annotation.index);
 
         // this.viewer.history.save('text/p'+pageNumber);
       }else{
@@ -33,7 +33,7 @@ _.extend(DV.Schema.events, {
       var pageNumber    = parseInt(chapterIndex,10)+1;
 
       if(this.viewer.state === 'ViewText'){
-        this.loadText(chapterIndex);
+        this.openTextPage(chapterIndex);
         // this.viewer.history.save('text/p'+pageNumber);
       }else if(this.viewer.state === 'ViewDocument' ||
                this.viewer.state === 'ViewThumbnails'){

@@ -7,9 +7,10 @@ DV.Schema = function() {
   this.elements     = {};
   this.text         = {};
   this.data         = {
+    PAGE_DELIMITER          : '<PAGE-DELIMITER />',
     zoomLevel               : 700,
     pageWidthPadding        : 0,
-    additionalPaddingOnPage : 3,
+    additionalPaddingOnPage : 10,
     state                   : { page: { previous: 0, current: 0, next: 1 } }
   };
 };

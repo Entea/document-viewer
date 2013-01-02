@@ -95,7 +95,7 @@ DV.Schema.states = {
     this.acceptInput.allow();
     this.pageSet.zoomText();
     this.helpers.toggleContent('viewText');
-    this.events.loadText();
+    this.events.loadAllTextPages();
     return true;
   },
 

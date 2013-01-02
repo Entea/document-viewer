@@ -160,7 +160,7 @@ DV.Api.prototype = {
         if (originalPageText != pageText[pageNumber-1]) {
           self.setPageText(originalPageText, pageNumber);
           if (pageNumber == self.currentPage()) {
-            self.viewer.events.loadText();
+            self.viewer.events.openTextPage();
           }
         }
       });
@@ -324,7 +324,7 @@ DV.Api.prototype = {
 
   enterEditPageTextMode : function() {
     this.viewer.openEditor = 'editText';
-    this.viewer.events.loadText();
+    this.viewer.events.openTextPage();
   },
 
   leaveEditPageTextMode : function() {
