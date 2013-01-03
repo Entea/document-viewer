@@ -393,7 +393,15 @@ DV.Schema.helpers = {
 
     jump: function (pageIndex, modifier, forceRedraw) {
         modifier = (modifier) ? parseInt(modifier, 10) : 0;
-        var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
+        var position = 0;
+        if (this.viewer.state == 'ViewText') {
+            var page = $(this.viewer.$('.DV-textPage').get(pageIndex));
+            if (page.length) {
+                position = page.position().top;
+            }
+        } else {
+            position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
+        }
 
         this.elements.scrollerTop(position);
         this.models.document.setPageIndex(pageIndex);
@@ -426,7 +434,7 @@ DV.Schema.helpers = {
             this.elements.collection.css('left', scrollLeftShift + 'px');
         }
 
-        scrollerEl.css('top', Math.min(-scrollTopShift, 0));
+        this.elements.scrollerTop(scrollTopShift);
     },
 
     getAppState: function () {

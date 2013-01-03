@@ -1,5 +1,6 @@
 // This manages events for different states activated through DV interface actions like clicks, mouseovers, etc.
 DV.Schema.events = {
+    isTextLoaded: false,
     // Change zoom level and causes a reflow and redraw of pages.
     zoom: function (level) {
         var viewer = this.viewer;
@@ -63,8 +64,8 @@ DV.Schema.events = {
         var me = this;
 
         var processText = function (text) {
+            me.isTextLoaded = true;
             var pages = text.split(me.viewer.schema.data.PAGE_DELIMITER);
-            console.log('There are %d pages', pages.length)
 
             // Remove all pages.
             me.viewer.$('.DV-text .DV-textPage').remove();
@@ -86,7 +87,8 @@ DV.Schema.events = {
                     me.viewer.$('.DV-textContents').attr('contentEditable', true).addClass('DV-editing');
                 }
             }
-
+            me.elements.updateScroller();
+            me.openTextPage(me.viewer.models.document.currentIndex())
             if (afterLoad) afterLoad.call(me.helpers);
         };
 
@@ -104,6 +106,15 @@ DV.Schema.events = {
         if (pageIndex == undefined || pageIndex < 0) {
             pageIndex = 0;
         }
+
+        // If the text has not been loaded, load it first :)
+        if (!this.isTextLoaded) {
+            this.loadAllTextPages(function() {
+                this.openTextPage(pageIndex, afterLoad);
+            });
+            return;
+        }
+
         var page = $(this.viewer.$('.DV-textPage').get(pageIndex));
         if (page.length) {
             this.viewer.elements.scrollerTop(page.position().top);

@@ -27,37 +27,8 @@
   display:inline;
 }
 
-.DV-docViewer .DV-searchInput {
-  display: block;
-  border: 1px solid #777;
-  font-family: Arial;
-  margin: 2px 5px 0 0;
-  padding: 4px 20px 3px;
-  width:210px;
-  font-size: 11px;
-  line-height: 14px;
-  background: #FFF url(../../../images/DV/embed/search_icon.png) no-repeat 5px 5px;
-  outline: none;
-}
-
-.DV-searchInput[type="search"] {
-  margin: 4px 10px 0 0;
-}
-.DV-searchInput.placeholder {
-  color: #A0A0A0;
-}
-
-.DV-searchInput:focus{
-  border:1px solid #aaa;
-}
-
 .DV-searchInputWrap {
   position: relative;
-}
-
-.DV-searchInput{
-  float: left;
-  display: block;
 }
 
 .DV-searchDocument .DV-searchInput-cancel {
