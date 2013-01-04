@@ -1,32 +1,20 @@
 _.extend(DV.Schema.helpers, {
     getSearchResponse: function (query) {
-        var handleResponse = DV.jQuery.proxy(function (response) {
-            this.viewer.searchResponse = response;
-            var hasResults = (response.results.length > 0) ? true : false;
-
-            var text = hasResults ? 'of ' + response.results.length + ' ' : ' ';
-            this.viewer.$('span.DV-totalSearchResult').text(text);
-            this.viewer.$('span.DV-searchQuery').text(response.query);
-            if (hasResults) {
-                // this.viewer.history.save('search/p'+response.results[0]+'/'+response.query);
-                var currentPage = this.viewer.models.document.currentPage();
-                var page = (_.include(response.results, currentPage)) ? currentPage : response.results[0];
-                this.events.openTextPage(page - 1, this.highlightSearchResponses);
-            } else {
-                this.highlightSearchResponses();
-            }
-        }, this);
-
-        var me = this;
-        var failResponse = function () {
-            me.viewer.$('.DV-currentSearchResult').text('Search is not available at this time');
-            me.viewer.$('span.DV-searchQuery').text(query);
-            me.viewer.$('.DV-searchResults').addClass('DV-noResults');
+        console.log('Searching "%s"', query)
+        this.viewer.searchResponse = {
+            matches: 1,
+            results: [],
+            query: query
         };
 
-        var searchURI = this.viewer.schema.document.resources.search.replace('{query}', encodeURIComponent(query));
-        if (this.viewer.helpers.isCrossDomain(searchURI)) searchURI += '&callback=?';
-        DV.jQuery.ajax({url: searchURI, dataType: 'json', success: handleResponse, error: failResponse});
+        if (this.events.isTextLoaded) {
+            this.highlightSearchResponses();
+        } else {
+            var me = this;
+            this.events.loadAllTextPages(function() {
+                me.highlightSearchResponses();
+            });
+        }
     },
     acceptInputCallBack: function () {
         var pageIndex = parseInt(this.elements.currentPage.text(), 10) - 1;
@@ -56,22 +44,6 @@ _.extend(DV.Schema.helpers, {
 
         if (!response) return false;
 
-        var results = response.results;
-        var currentResultEl = this.viewer.$('.DV-currentSearchResult');
-
-        if (results.length == 0) {
-            currentResultEl.text('No Results');
-            this.viewer.$('.DV-searchResults').addClass('DV-noResults');
-        } else {
-            this.viewer.$('.DV-searchResults').removeClass('DV-noResults');
-        }
-        for (var i = 0; i < response.results.length; i++) {
-            if (this.models.document.currentPage() === response.results[i]) {
-                currentResultEl.text('Page ' + (i + 1) + ' ');
-                break;
-            }
-        }
-
         this.viewer.$('.DV-textPage').each(function(i, el) {
             // Replaces spaces in query with `\s+` to match newlines in textContent,
             // escape regex char contents (like "()"), and only match on word boundaries.
@@ -85,11 +57,14 @@ _.extend(DV.Schema.helpers, {
             textContent.html(replacement);
         });
 
+        if (this.viewer.$('.DV-textContents span.DV-searchMatch').length == 0) {
+            if (this.viewer.options.onEmptySearch) {
+                this.viewer.options.onEmptySearch(response.query);
+            }
+        }
+
         var highlightIndex = (viewer.toHighLight) ? viewer.toHighLight : 0;
         this.highlightMatch(highlightIndex);
-
-        // cleanup
-        currentResultEl = null;
     },
     // Highlight a single instance of an entity on the page. Make sure to
     // convert into proper UTF8 before trying to get the entity length, and

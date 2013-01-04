@@ -434,7 +434,9 @@ DV.Schema.helpers = {
             this.elements.collection.css('left', scrollLeftShift + 'px');
         }
 
-        this.elements.scrollerTop(scrollTopShift);
+        scrollerEl.css('top', Math.min(-scrollTopShift, 0));
+//        Donno why this does not work? :(
+//        this.elements.updateScroller();
     },
 
     getAppState: function () {
@@ -543,6 +545,19 @@ DV.Schema.helpers = {
                 this.jump(opts.page - 1);
             }
         }
-    }
+    },
 
+    updatePageNumberOnTextView: function() {
+        if (this.viewer.state == 'ViewText' || this.viewer.state == 'ViewSearch') {
+            var scrollerTop = this.viewer.elements.scrollerTop();
+            var pageIndex = 0;
+
+            this.viewer.$('.DV-textPage').each(function(i, el) {
+                if ($(el).position().top - 150 < scrollerTop) {
+                    pageIndex = i;
+                }
+            });
+            this.viewer.models.document.setPageIndex(pageIndex);
+        }
+    }
 };
