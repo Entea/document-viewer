@@ -1,6 +1,5 @@
 _.extend(DV.Schema.helpers, {
     getSearchResponse: function (query) {
-        console.log('Searching "%s"', query)
         this.viewer.searchResponse = {
             matches: 1,
             results: [],
