@@ -139,16 +139,24 @@ DV.load = function(documentRep, options) {
     });
   };
 
+  var onError = function(err) {
+      if (viewer.options.onDocumentLoadError) {
+          viewer.options.onDocumentLoadError(err);
+      } else {
+          alert('Error loading document json');
+          console.log('Error', err);
+      }
+  }
   // If we've been passed the JSON directly, we can go ahead,
   // otherwise make a JSONP request to fetch it.
   var jsonLoad = function() {
     if (_.isString(documentRep)) {
       if (documentRep.match(/\.js$/)) {
-        DV.jQuery.getScript(documentRep);
+        DV.jQuery.getScript(documentRep).error(onError);
       } else {
         var crossDomain = viewer.helpers.isCrossDomain(documentRep);
         if (crossDomain) documentRep = documentRep + '?callback=?';
-        DV.jQuery.getJSON(documentRep, continueLoad);
+        DV.jQuery.getJSON(documentRep, continueLoad).error(onError);
       }
     } else {
       continueLoad(documentRep);

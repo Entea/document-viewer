@@ -61,6 +61,8 @@ _.extend(DV.Schema.helpers, {
         var containerEl = DV.jQuery(container);
         if (!containerEl.length) throw "Document Viewer container element not found: " + container;
         containerEl.html(JST.viewer(viewerOptions));
+
+        var viewer = this.viewer;
         this.viewer.$(".DV-pages").mCustomScrollbar({
             scrollInertia: 0,
             scrollAmount: 20,
@@ -69,7 +71,9 @@ _.extend(DV.Schema.helpers, {
                 updateOnContentResize: true
             },
             callbacks: {
-                onScroll: this.viewer.helpers.updatePageNumberOnTextView
+                onScroll: function() {
+                    viewer.helpers.updatePageNumberOnTextView();
+                }
             }
         });
     },

@@ -26,6 +26,9 @@ DV.Schema.helpers = {
             },
             change: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
+                if (viewer.options.onZoomChange) {
+                    viewer.options.onZoomChange();
+                }
             }
         });
 
@@ -392,9 +395,9 @@ DV.Schema.helpers = {
         }
     },
 
-    shift: function (argHash) {
+    shift: function (argHash, useScrollTo) {
         var scrollerEl = this.elements.scroller();
-        var scrollTopShift = -(scrollerEl.position().top) + argHash.deltaY;
+        var scrollTopNew = -(scrollerEl.position().top) + argHash.deltaY;
         var left = parseInt(this.elements.collection.css('left'));
         var scrollLeftShift = left - argHash.deltaX;
 
@@ -415,8 +418,7 @@ DV.Schema.helpers = {
             this.elements.collection.css('left', scrollLeftShift + 'px');
         }
 
-        scrollerEl.css('top', Math.min(-scrollTopShift, 0));
-
+        scrollerEl.css('top', Math.min(-scrollTopNew, 0));
     },
 
     getAppState: function () {

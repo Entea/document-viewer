@@ -18,7 +18,13 @@ DV.Schema = function() {
 // Imports the document's JSON representation into the DV.Schema form that
 // the models expect.
 DV.Schema.prototype.importCanonicalDocument = function(json) {
-  // Ensure that IDs start with 1 as the lowest id.
+  if (json.pages == 0) {
+      var viewer = DV.viewers[json.id];
+      if (viewer && viewer.options.onEmptyDocument) {
+          viewer.options.onEmptyDocument();
+      }
+  }
+  // Ensure that IDs start with 1 as the lowest id.                      1
   _.uniqueId();
   // Ensure at least empty arrays for sections.
   json.sections               = _.sortBy(json.sections || [], function(sec){ return sec.page; });
@@ -30,6 +36,8 @@ DV.Schema.prototype.importCanonicalDocument = function(json) {
   this.data.title             = json.title;
   this.data.totalPages        = json.pages;
   this.data.totalAnnotations  = json.annotations.length;
+  this.data.nextDocumentId    = json.next;
+  this.data.prevDocumentId    = json.prev;
   this.data.sections          = json.sections;
   this.data.chapters          = [];
   this.data.annotationsById   = {};

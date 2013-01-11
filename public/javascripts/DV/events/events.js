@@ -36,6 +36,9 @@ DV.Schema.events = {
 
     // Draw the page at the given index.
     drawPageAt: function (pageIds, index) {
+        if (pageIds == undefined) {
+            return;
+        }
         var first = index == 0;
         var last = index == this.models.document.totalPages - 1;
         if (first) index += 1;
