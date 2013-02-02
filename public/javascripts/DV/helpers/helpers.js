@@ -11,6 +11,14 @@ DV.Schema.helpers = {
         var doc = context.models.document;
         var value = _.indexOf(doc.ZOOM_RANGES, doc.zoomLevel);
         var viewer = this.viewer;
+
+        var needsReset = false;
+        if (viewer.options.sliderZoomLevel > 0 && viewer.options.sliderZoomLevel < 5) {
+            value = viewer.options.sliderZoomLevel;
+            needsReset = true;
+        }
+
+        var sliding = false;
         viewer.slider = $('.DV-zoomBox').slider({
             step: 1,
             min: 0,
@@ -23,12 +31,15 @@ DV.Schema.helpers = {
             },
             slide: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
+                sliding = true;
             },
             change: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
                 if (viewer.options.onZoomChange) {
-                    viewer.options.onZoomChange();
+                    viewer.options.onZoomChange(sliding, d.value, boundZoom, context.models.document.ZOOM_RANGES);
                 }
+                // reset sliding flag
+                sliding = false;
             }
         });
 
