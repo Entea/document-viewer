@@ -8,7 +8,22 @@ DV.model.Pages = function (viewer) {
 
     // Real page heights.
     this.pageHeights = [];
-    this.rotatedPages = {};
+
+    var rotatedPages = viewer.schema.data.rotatedPages;
+    if (!rotatedPages) {
+        viewer.schema.data.rotatedPages = {};
+    }
+    if (_.isArray(rotatedPages)) {
+        rotatedPages = {};
+        if (rotatedPages.length) {
+            var obj = {};
+            for (var i = 0; i < rotatedPages.length; i++) {
+                obj[i] = rotatedPages[ i ];
+            }
+            rotatedPages = obj;
+        }
+    }
+    this.rotatedPages = rotatedPages || {};
 
     // Real page note heights.
     this.pageNoteHeights = [];
