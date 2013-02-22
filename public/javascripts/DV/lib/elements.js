@@ -56,7 +56,7 @@ DV.Elements.prototype.updateScroller = function() {
     }
 }
 
-DV.Elements.prototype.updateZoom = function() {
+DV.Elements.prototype.updateZoom = function(level) {
     this.updateScroller();
-    this.zoomChange && this.zoomChange(this._viewer);
+    this.zoomChange && this.zoomChange(this._viewer, level);
 }

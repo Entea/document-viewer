@@ -13,7 +13,7 @@ DV.Schema.events = {
         };
         viewer.confirmStateChange ? viewer.confirmStateChange(continuation) : continuation();
         this.viewer.models.document.redrawPages();
-        this.viewer.elements.updateZoom();
+        this.viewer.elements.updateZoom(level);
     },
 
     // Draw (or redraw) the visible pages on the screen.

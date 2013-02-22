@@ -12,13 +12,17 @@ DV.Schema.helpers = {
         var value = _.indexOf(doc.ZOOM_RANGES, doc.zoomLevel);
         var viewer = this.viewer;
 
-        var needsReset = false;
         if (viewer.options.sliderZoomLevel > 0 && viewer.options.sliderZoomLevel < 5) {
             value = viewer.options.sliderZoomLevel;
-            needsReset = true;
         }
 
         var sliding = false;
+
+        try {
+            $('.DV-zoomBox').slider("destroy");
+        } catch (e) {
+        }
+
         viewer.slider = $('.DV-zoomBox').slider({
             step: 1,
             min: 0,
@@ -26,9 +30,6 @@ DV.Schema.helpers = {
             orientation: "vertical",
             isRTL: true,
             value: value,
-            create: function(event, ui) {
-                $('.DV-zoomBox').removeClass('DV-zoomBox');
-            },
             slide: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
                 sliding = true;
@@ -455,7 +456,11 @@ DV.Schema.helpers = {
     // absolute from the current y offset to the bottom of the viewport.
     positionViewer: function () {
         var offset = this.elements.viewer.position();
-        this.elements.viewer.css({position: 'absolute', top: offset.top, bottom: 0, left: offset.left, right: offset.left});
+        if (this.viewer.options.positionFunction) {
+            this.viewer.options.positionFunction(this.viewer, offset);
+        } else {
+            this.elements.viewer.css({position: 'absolute', top: offset.top, bottom: 0, left: offset.left, right: offset.left});
+        }
     },
 
     unsupportedBrowser: function () {
@@ -513,7 +518,7 @@ DV.Schema.helpers = {
         var ranges = this.viewer.models.document.ZOOM_RANGES;
         // Try to set max zoom possible.
         for (var i = ranges.length; i >= 0; i--) {
-            if (zoom > ranges[ i ]) {
+            if (zoom >= ranges[ i ]) {
                 zoom = ranges[ i ];
                 break;
             }

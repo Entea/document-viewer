@@ -63,6 +63,10 @@ _.extend(DV.Schema.helpers, {
         containerEl.html(JST.viewer(viewerOptions));
 
         var viewer = this.viewer;
+        try {
+            this.viewer.$(".DV-pages").mCustomScrollbar("destroy");
+        } catch (e) {
+        }
         this.viewer.$(".DV-pages").mCustomScrollbar({
             scrollInertia: 0,
             scrollAmount: 20,
