@@ -6,7 +6,7 @@ _.extend(DV.Schema.helpers, {
         return _.size(this.models.annotations.byId) > 0;
     },
 
-    renderViewer: function () {
+    renderViewer: function (force) {
         var doc = this.viewer.schema.document;
         var pagesHTML = this.constructPages();
         var description = (doc.description) ? doc.description : null;
@@ -59,14 +59,25 @@ _.extend(DV.Schema.helpers, {
 
         var container = this.viewer.options.container;
         var containerEl = DV.jQuery(container);
-        if (!containerEl.length) throw "Document Viewer container element not found: " + container;
-        containerEl.html(JST.viewer(viewerOptions));
 
         var viewer = this.viewer;
         try {
             this.viewer.$(".DV-pages").mCustomScrollbar("destroy");
         } catch (e) {
         }
+        if (force || !this.viewer.$(".DV-pages").length) {
+            if (!containerEl.length) throw "Document Viewer container element not found: " + container;
+            containerEl.html(JST.viewer(viewerOptions));
+        } else {
+            var newPages = $(viewerOptions.pages);
+
+            viewer.$('.DV-set').remove();
+            viewer.$('.DV-pageCollection').append(newPages);
+
+            containerEl.unbind();
+            containerEl.find('*').unbind();
+        }
+
         this.viewer.$(".DV-pages").mCustomScrollbar({
             scrollInertia: 0,
             scrollAmount: 20,

@@ -33,6 +33,7 @@ DV.Elements.prototype.scrollerTop = function(top) {
         if (this.isScrollerInitialized()) {
             this.window.mCustomScrollbar('scrollTo', Math.max(top, 1));
         }
+        return this;
     }
 };
 
@@ -47,16 +48,16 @@ DV.Elements.prototype.isScrollerInitialized = function () {
     }
 
     return this.scrollInitialized;
-}
+};
 
 DV.Elements.prototype.updateScroller = function() {
     if (this.isScrollerInitialized()) {
         this.window.mCustomScrollbar('update');
         this.collection.css('left', 0);
     }
-}
+};
 
 DV.Elements.prototype.updateZoom = function(level) {
     this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer, level);
-}
+};
