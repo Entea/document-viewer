@@ -409,7 +409,7 @@ DV.Schema.helpers = {
 
     shift: function (argHash, useScrollTo) {
         var scrollerEl = this.elements.scroller();
-        var scrollTopNew = -(scrollerEl.position().top) + argHash.deltaY;
+        var scrollTopNew = scrollerEl ? -(scrollerEl.position().top) + argHash.deltaY : 0;
         var left = parseInt(this.elements.collection.css('left'));
         var scrollLeftShift = left - argHash.deltaX;
 
@@ -430,7 +430,9 @@ DV.Schema.helpers = {
             this.elements.collection.css('left', scrollLeftShift + 'px');
         }
 
-        scrollerEl.css('top', Math.min(-scrollTopNew, 0));
+        if (scrollerEl) {
+            scrollerEl.css('top', Math.min(-scrollTopNew, 0));
+        }
     },
 
     getAppState: function () {

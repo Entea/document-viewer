@@ -12,6 +12,10 @@ DV.Elements.prototype.getElement = function(elementQuery,force){
 };
 
 DV.Elements.prototype.scroller = function() {
+    if (this['scrlr'] == 'destroyed') {
+        return null;
+    }
+
     if (this['scrlr'] == undefined || !this['scrlr'].length) {
         this.getElement({name: 'scrlr', query: 'div.mCSB_container'});
     }
@@ -60,4 +64,8 @@ DV.Elements.prototype.updateScroller = function() {
 DV.Elements.prototype.updateZoom = function(level) {
     this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer, level);
+
+    // destroy the scroller
+    var viewer = this._viewer;
+    viewer.helpers.destroyScrollerIfNeeded();
 };

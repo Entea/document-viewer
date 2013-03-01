@@ -61,10 +61,7 @@ _.extend(DV.Schema.helpers, {
         var containerEl = DV.jQuery(container);
 
         var viewer = this.viewer;
-        try {
-            this.viewer.$(".DV-pages").mCustomScrollbar("destroy");
-        } catch (e) {
-        }
+
         if (force || !this.viewer.$(".DV-pages").length) {
             if (!containerEl.length) throw "Document Viewer container element not found: " + container;
             containerEl.html(JST.viewer(viewerOptions));
@@ -78,7 +75,21 @@ _.extend(DV.Schema.helpers, {
             containerEl.find('*').unbind();
         }
 
-        this.viewer.$(".DV-pages").mCustomScrollbar({
+        this.createScroller();
+    },
+
+    createScroller: function() {
+        var viewer = this.viewer;
+
+        try {
+            this.viewer.$(".DV-pages").mCustomScrollbar("destroy");
+        } catch (e) {
+        }
+
+        if (viewer.elements) {
+            viewer.elements['scrlr'] = null;
+        }
+        viewer.$(".DV-pages").mCustomScrollbar({
             scrollInertia: 0,
             scrollAmount: 20,
             advanced: {
@@ -91,6 +102,14 @@ _.extend(DV.Schema.helpers, {
                 }
             }
         });
+    },
+
+    destroyScrollerIfNeeded: function() {
+        var viewer = this.viewer;
+        if (viewer.elements && viewer.elements.scrlr.parent != undefined && !viewer.elements.scrlr.parent().find('.mCSB_scrollTools').is(':visible')) {
+            viewer.$('.DV-pages').mCustomScrollbar('destroy');
+            viewer.elements.scrlr = 'destroyed';
+        }
     },
 
     // If there is no description, no navigation, and no sections, tighten up

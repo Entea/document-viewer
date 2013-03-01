@@ -9,21 +9,7 @@ DV.model.Pages = function (viewer) {
     // Real page heights.
     this.pageHeights = [];
 
-    var rotatedPages = viewer.schema.data.rotatedPages;
-    if (!rotatedPages) {
-        viewer.schema.data.rotatedPages = {};
-    }
-    if (_.isArray(rotatedPages)) {
-        rotatedPages = {};
-        if (rotatedPages.length) {
-            var obj = {};
-            for (var i = 0; i < rotatedPages.length; i++) {
-                obj[i] = rotatedPages[ i ];
-            }
-            rotatedPages = obj;
-        }
-    }
-    this.rotatedPages = rotatedPages || {};
+    this.rotation = parseInt(viewer.schema.data.rotation);
 
     // Real page note heights.
     this.pageNoteHeights = [];
@@ -34,12 +20,10 @@ DV.model.Pages = function (viewer) {
 
     // Factors for scaling from image size to zoomlevel.
     this.SCALE_FACTORS = {
-        '500': 0.714,
-        '700': 1.0,
+        '600': 0.6,
         '800': 0.8,
-        '900': 0.9,
         '1000': 1.0,
-        '1200': 1.0,
+        '1200': 0.8,
         '1500': 1.0
     };
 
@@ -59,6 +43,8 @@ DV.model.Pages = function (viewer) {
     this.height = this.baseHeight * this.zoomFactor();
     this.numPagesLoaded = 0;
     this.imageWidth = 0;
+
+    this.needsRepositioning = false;
 };
 
 DV.model.Pages.prototype = {
@@ -68,7 +54,7 @@ DV.model.Pages.prototype = {
         var url = this.viewer.schema.document.resources.page.image;
         var size = this.zoomLevel > this.BASE_WIDTH ? 'large' : 'normal';
         var pageNumber = index + 1;
-        var rotation = this.rotatedPages[pageNumber] == undefined ? 0 : this.rotatedPages[pageNumber];
+        var rotation = (this.rotation == undefined) ? 0 : this.rotation;
 
         if (this.viewer.schema.document.resources.page.zeropad) {
             pageNumber = this.zeroPad(pageNumber, 5);
@@ -81,16 +67,13 @@ DV.model.Pages.prototype = {
         return url;
     },
 
-    rotatePage: function(pageNumber) {
-        if (this.rotatedPages[pageNumber] == undefined) {
-            this.rotatedPages[pageNumber] = 1;
-        } else {
-            this.rotatedPages[pageNumber]++;
-        }
+    rotatePage: function() {
+        this.rotation++;
 
-        if (this.rotatedPages[pageNumber] % 4 == 0) {
-            this.rotatedPages[pageNumber] = 0;
+        if (this.rotation % 4 == 0) {
+            this.rotation = 0;
         }
+        return this.rotation;
     },
 
     zeroPad: function (num, count) {
@@ -120,30 +103,62 @@ DV.model.Pages.prototype = {
         return this.zoomLevel / this.BASE_WIDTH;
     },
 
+    scaleFactor: function() {
+        if (undefined == this.SCALE_FACTORS[this.zoomLevel]) {
+            throw 'Scale factor is undefined for zoomLevel = "' + this.zoomLevel + '"';
+        }
+        return this.SCALE_FACTORS[this.zoomLevel];
+    },
+
     // Resize or zoom the pages width and height.
     resize: function (zoomLevel) {
+        zoomLevel = zoomLevel || this.zoomLevel;
         var padding = 0; // this.viewer.models.pages.DEFAULT_PADDING;
 
         if (zoomLevel) {
             if (zoomLevel == this.zoomLevel) return;
-            var previousFactor = this.zoomFactor();
             this.zoomLevel = zoomLevel || this.zoomLevel;
-            var scale = this.zoomFactor() / previousFactor;
-            this.width = zoomLevel; //Math.round(this.baseWidth * this.zoomFactor());
-            this.height = Math.round(this.height * scale);
+            var scale = this.scaleFactor();
+
+            if (this.imageWidth) {
+                if (this.rotation % 2 == 1) {
+                    this.height = this.zoomLevel;
+                    this.width = this.imageWidth * (this.height / this.imageHeight);
+                } else {
+                    this.width = this.zoomLevel;
+                    this.height = this.width * (this.imageHeight / this.imageWidth);
+                }
+            } else {
+                if (this.rotation % 2 == 1) {
+                    this.height = zoomLevel;
+                    this.width = Math.round(this.width * scale);
+                } else {
+                    this.width = zoomLevel; //Math.round(this.baseWidth * this.zoomFactor());
+                    this.height = Math.round(this.height * scale);
+                }
+            }
             this.averageHeight = Math.round(this.averageHeight * scale);
         }
 
         this.viewer.elements.sets.width(this.zoomLevel);
-        this.viewer.elements.collection.css({width: this.width + padding });
+        if (this.viewer.state == 'ViewDocument') {
+            this.viewer.elements.collection.css({width: this.width + padding });
+        }
         this.viewer.$('.DV-textContents').css({'font-size': this.zoomLevel * 0.02 + 'px'});
+        this.adjustWidth();
+
+        if (this.needsRepositioning) {
+            this.viewer.helpers.positionViewer();
+        }
     },
 
     // Update the height for a page, when its real image has loaded.
     updateHeight: function (image, pageIndex) {
         var h = this.getPageHeight(pageIndex);
-        var height = image.height; // * (this.zoomLevel > this.BASE_WIDTH ? 1.0 : 1.0);
+        var height = image.height;
+        this.imageHeight = height;
         this.imageWidth = image.width;
+        this.needsRepositioning = true;
 
         if (image.width < this.baseWidth) {
             // Not supposed to happen, but too-small images sometimes do.
@@ -153,6 +168,8 @@ DV.model.Pages.prototype = {
         this.setPageHeight(pageIndex, height);
         this.averageHeight = ((this.averageHeight * this.numPagesLoaded) + height) / (this.numPagesLoaded + 1);
         this.numPagesLoaded += 1;
+        this.adjustWidth();
+
         if (h === height) return;
         this.viewer.models.document.computeOffsets();
         this.viewer.pageSet.simpleReflowPages();
@@ -163,6 +180,18 @@ DV.model.Pages.prototype = {
         }
     },
 
+    adjustWidth: function() {
+        var width = this.getPageWidth();
+        this.viewer.elements.collection.width(width);
+    },
+
+    /**
+     * Returns the width to be set on outer container elements
+     */
+    getEffectiveWidth: function() {
+        return this.zoomLevel + 5;
+    },
+
     // set the real page height
     setPageHeight: function (pageIndex, pageHeight) {
         this.pageHeights[pageIndex] = Math.round(pageHeight);
@@ -171,7 +200,16 @@ DV.model.Pages.prototype = {
     // get the real page height
     getPageHeight: function (pageIndex) {
         var realHeight = this.pageHeights[pageIndex];
-        return Math.round(realHeight ? realHeight * this.zoomFactor() : this.height);
-    }
+        if (realHeight) {
+            return Math.round(realHeight * this.scaleFactor());
+        }
+        return Math.round(this.height);
+    },
 
+    getPageWidth: function() {
+        if (this.imageWidth)
+            return Math.round(this.imageWidth * this.scaleFactor());
+
+        return this.width;
+    }
 };

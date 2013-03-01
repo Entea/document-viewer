@@ -8,7 +8,7 @@ DV.Schema = function() {
   this.text         = {};
   this.data         = {
     PAGE_DELIMITER          : '<PAGE-DELIMITER />',
-    zoomLevel               : 700,
+    zoomLevel               : 800,
     pageWidthPadding        : 0,
     additionalPaddingOnPage : 10,
     state                   : { page: { previous: 0, current: 0, next: 1 } }
@@ -39,7 +39,7 @@ DV.Schema.prototype.importCanonicalDocument = function(json) {
   this.data.nextDocumentId    = json.next;
   this.data.prevDocumentId    = json.prev;
   this.data.sections          = json.sections;
-  this.data.rotatedPages      = json.rotatedPages;
+  this.data.rotation          = json.rotation;
   this.data.nativeFile        = json.nativeFile;
   this.data.chapters          = [];
   this.data.annotationsById   = {};

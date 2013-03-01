@@ -66,8 +66,9 @@ DV.Schema.events = {
     loadAllTextPages: function (afterLoad) {
         var me = this;
 
-        var processText = function (text) {
+        var processText = function (text, loadFromCache) {
             me.isTextLoaded = true;
+
             var pages = text.split(me.viewer.schema.data.PAGE_DELIMITER);
 
             // Remove all pages.
@@ -81,8 +82,7 @@ DV.Schema.events = {
 
                 me.viewer.$('.DV-text').append(div);
 
-                if (me.viewer.openEditor == 'editText' &&
-                        !(pageNumber in me.models.document.originalPageText)) {
+                if (!(pageNumber in me.models.document.originalPageText)) {
                     me.models.document.originalPageText[pageNumber] = pages[ i ];
                 }
                 // ???
@@ -94,6 +94,10 @@ DV.Schema.events = {
             me.openTextPage(me.viewer.models.document.currentIndex())
             if (afterLoad) afterLoad.call(me.helpers);
         };
+
+        if (this.isTextLoaded) {
+            return;
+        }
 
         var handleResponse = DV.jQuery.proxy(function (response) {
             processText(response);

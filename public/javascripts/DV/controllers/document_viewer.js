@@ -146,7 +146,7 @@ DV.load = function(documentRep, options) {
           alert('Error loading document json');
           console.log('Error', err);
       }
-  }
+  };
   // If we've been passed the JSON directly, we can go ahead,
   // otherwise make a JSONP request to fetch it.
   var jsonLoad = function() {
