@@ -1,17 +1,19 @@
-DV.Elements = function(viewer){
-  this._viewer = viewer;
-  var elements = DV.Schema.elements;
-  for (var i=0, elemCount=elements.length; i < elemCount; i++) {
-    this.getElement(elements[i]);
-  }
+DV.Elements = function (viewer) {
+    this._viewer = viewer;
+    var elements = DV.Schema.elements;
+    for (var i = 0, elemCount = elements.length; i < elemCount; i++) {
+        this.getElement(elements[i]);
+    }
+
+    this.scheduledScrollerRecreate = false;
 };
 
 // Get and store an element reference
-DV.Elements.prototype.getElement = function(elementQuery,force){
-  this[elementQuery.name] = elementQuery.outsideOfViewer ? $(elementQuery.query) : this._viewer.$(elementQuery.query);
+DV.Elements.prototype.getElement = function (elementQuery, force) {
+    this[elementQuery.name] = elementQuery.outsideOfViewer ? $(elementQuery.query) : this._viewer.$(elementQuery.query);
 };
 
-DV.Elements.prototype.scroller = function() {
+DV.Elements.prototype.scroller = function () {
     if (this['scrlr'] == 'destroyed') {
         return null;
     }
@@ -22,7 +24,7 @@ DV.Elements.prototype.scroller = function() {
     return this['scrlr'];
 };
 
-DV.Elements.prototype.scrollerTop = function(top) {
+DV.Elements.prototype.scrollerTop = function (top) {
     var el = this.scroller();
     if (top == undefined) {
         if (!el || !el.length) {
@@ -35,10 +37,19 @@ DV.Elements.prototype.scrollerTop = function(top) {
         }
 
         if (this.isScrollerInitialized()) {
-            this.window.mCustomScrollbar('scrollTo', Math.max(top, 1));
+            if (this.isScrollerVisible()) {
+                this.window.mCustomScrollbar('scrollTo', Math.max(top, 1));
+            } else {
+                // when the scroller is not visible, force top to 0
+                this.window.mCustomScrollbar('scrollTo', 0);
+            }
         }
         return this;
     }
+};
+
+DV.Elements.prototype.isScrollerVisible = function() {
+    return this.window.find('.mCSB_scrollTools').is(':visible');
 };
 
 DV.Elements.prototype.isScrollerInitialized = function () {
@@ -54,18 +65,27 @@ DV.Elements.prototype.isScrollerInitialized = function () {
     return this.scrollInitialized;
 };
 
-DV.Elements.prototype.updateScroller = function() {
+DV.Elements.prototype.updateScroller = function () {
     if (this.isScrollerInitialized()) {
         this.window.mCustomScrollbar('update');
         this.collection.css('left', 0);
     }
 };
 
-DV.Elements.prototype.updateZoom = function(level) {
+DV.Elements.prototype.updateZoom = function (level) {
     this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer, level);
 
     // destroy the scroller
     var viewer = this._viewer;
     viewer.helpers.destroyScrollerIfNeeded();
+
+    var that = this;
+    if (!this.scheduledScrollerRecreate) {
+        this.scheduledScrollerRecreate = true;
+        setTimeout(function() {
+            that.scheduledScrollerRecreate = false;
+            viewer.helpers.createScroller();
+        }, 1000);
+    }
 };
