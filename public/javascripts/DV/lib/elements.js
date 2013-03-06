@@ -38,7 +38,7 @@ DV.Elements.prototype.scrollerTop = function (top) {
 
         if (this.isScrollerInitialized()) {
             if (this.isScrollerVisible()) {
-                this.window.mCustomScrollbar('scrollTo', Math.max(top, 1));
+                this.window.mCustomScrollbar('scrollTo', Math.max(top, 0));
             } else {
                 // when the scroller is not visible, force top to 0
                 this.window.mCustomScrollbar('scrollTo', 0);

@@ -111,17 +111,20 @@ DV.model.Pages.prototype = {
     },
 
     // Resize or zoom the pages width and height.
-    resize: function (zoomLevel) {
+    resize: function (zoomLevel, force) {
         zoomLevel = zoomLevel || this.zoomLevel;
         var padding = 0; // this.viewer.models.pages.DEFAULT_PADDING;
 
-        if (zoomLevel) {
-            if (zoomLevel == this.zoomLevel) return;
+        if (zoomLevel || force) {
+            if (zoomLevel == this.zoomLevel && !force) {
+                return;
+            }
+
             this.zoomLevel = zoomLevel || this.zoomLevel;
             var scale = this.scaleFactor();
 
             if (this.imageWidth) {
-                if (this.rotation % 2 == 1) {
+                if (this.rotation % 2) {
                     this.height = this.zoomLevel;
                     this.width = this.imageWidth * (this.height / this.imageHeight);
                 } else {
@@ -129,16 +132,17 @@ DV.model.Pages.prototype = {
                     this.height = this.width * (this.imageHeight / this.imageWidth);
                 }
             } else {
-                if (this.rotation % 2 == 1) {
+                if (this.rotation % 2) {
                     this.height = zoomLevel;
-                    this.width = Math.round(this.width * scale);
+                    //this.width = Math.round(this.baseWidth * scale);
                 } else {
-                    this.width = zoomLevel; //Math.round(this.baseWidth * this.zoomFactor());
-                    this.height = Math.round(this.height * scale);
+                    //this.height = Math.round(this.baseHeight * scale);
+                    this.width = zoomLevel;
                 }
             }
             this.averageHeight = Math.round(this.averageHeight * scale);
         }
+
 
         this.viewer.elements.sets.width(this.zoomLevel);
         if (this.viewer.state == 'ViewDocument') {
@@ -170,6 +174,8 @@ DV.model.Pages.prototype = {
         this.numPagesLoaded += 1;
         this.adjustWidth();
 
+        this.resize(0, true);
+
         if (h === height) return;
         this.viewer.models.document.computeOffsets();
         this.viewer.pageSet.simpleReflowPages();
@@ -189,6 +195,9 @@ DV.model.Pages.prototype = {
      * Returns the width to be set on outer container elements
      */
     getEffectiveWidth: function() {
+        if (this.rotation % 2) {
+            return Math.min(this.zoomLevel + 5, this.width);
+        }
         return this.zoomLevel + 5;
     },
 
@@ -201,6 +210,9 @@ DV.model.Pages.prototype = {
     getPageHeight: function (pageIndex) {
         var realHeight = this.pageHeights[pageIndex];
         if (realHeight) {
+            if (this.rotation % 2) {
+                return Math.min(realHeight * this.scaleFactor(), this.height);
+            }
             return Math.round(realHeight * this.scaleFactor());
         }
         return Math.round(this.height);

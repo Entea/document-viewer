@@ -342,10 +342,9 @@ DV.Api.prototype = {
     rotatePage: function () {
         var pagesModel = this.viewer.models.pages;
         var newRotation = pagesModel.rotatePage();
-        pagesModel.resize(pagesModel.zoomLevel);
+        pagesModel.resize();
         this.viewer.pageSet.simpleReflowPages();
 
-        this.viewer.pageSet.redraw();
         pagesModel.adjustWidth();
         this.viewer.elements.collection.css('left', 0);
         // Make sure that viewer repositions itself on next redraw

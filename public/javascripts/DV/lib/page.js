@@ -211,10 +211,29 @@ DV.Page.prototype.loadImage = function (argHash) {
                 delete me.loadTimer;
             }
         });
+        var onError = function() {
+            if (me.viewer.options.onMissingImage) {
+                me.viewer.options.onMissingImage();
+            }
+        };
+        preloader.bind('error', onError);
 
         var src = me.model_pages.imageURL(me.index);
         me._currentLoader = preloader;
-        preloader[0].src = src;
+        var img = preloader[0];
+        img.src = src;
+
+        function isType(o, t) {
+            return (typeof o).indexOf(t.charAt(0).toLowerCase()) === 0;
+        }
+        var prop = isType(img.naturalWidth, 'u') ? 'width' : 'naturalWidth';
+
+        if (img.complete) {
+            // loaded from cache
+            if (!img[prop]) {
+                onError();
+            }
+        }
     };
 
     this.loadTimer = setTimeout(lazyImageLoader, 150);
@@ -222,8 +241,11 @@ DV.Page.prototype.loadImage = function (argHash) {
 };
 
 DV.Page.prototype.sizeImage = function () {
-    var width = this.model_pages.getPageWidth();
-    var height = this.model_pages.getPageHeight(this.index);
+//    var width = this.model_pages.getPageWidth();
+//    var height = this.model_pages.getPageHeight(this.index);
+
+    var width = this.model_pages.width;
+    var height = this.model_pages.height;
 
     // Resize the cover.
     this.coverEl.css({width: width, height: height});

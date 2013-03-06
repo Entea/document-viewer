@@ -157,7 +157,9 @@ _.extend(DV.Schema.helpers, {
     },
 
     showEntity: function (name, offset, length) {
-        alert('Not implemented')
+        alert('Not implemented');
+        return;
+
         this.viewer.$('span.DV-totalSearchResult').text('');
         this.viewer.$('span.DV-searchQuery').text(name);
         this.viewer.$('span.DV-currentSearchResult').text("Searching");
@@ -167,5 +169,9 @@ _.extend(DV.Schema.helpers, {
         var viewer = this.viewer;
         viewer.searchResponse = null;
         viewer.toHighLight = null;
+
+        viewer.$('.DV-textContents span').each(function(i, e) {
+            $(e).replaceWith($(e).text());
+        });
     }
 });
