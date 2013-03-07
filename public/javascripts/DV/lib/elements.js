@@ -6,6 +6,7 @@ DV.Elements = function (viewer) {
     }
 
     this.scheduledScrollerRecreate = false;
+    this.scrollerRecreateTimeout = null;
 };
 
 // Get and store an element reference
@@ -76,16 +77,51 @@ DV.Elements.prototype.updateZoom = function (level) {
     this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer, level);
 
-    // destroy the scroller
-    var viewer = this._viewer;
-    viewer.helpers.destroyScrollerIfNeeded();
-
-    var that = this;
     if (!this.scheduledScrollerRecreate) {
         this.scheduledScrollerRecreate = true;
-        setTimeout(function() {
-            that.scheduledScrollerRecreate = false;
-            viewer.helpers.createScroller();
-        }, 1000);
+        this.recreateScrollerIfNeeded();
     }
+};
+
+/**
+ * Recreates the scroller, and destroys if it's not needed.
+ */
+DV.Elements.prototype.recreateScrollerIfNeeded = function() {
+    if (this.scheduledScrollerRecreate) {
+        return;
+    }
+
+    // destroy the scroller
+    var viewer = this._viewer;
+    var that = this;
+
+    if (this.scrollerRecreateTimeout !== null) {
+        clearTimeout(this.scrollerRecreateTimeout);
+        this.scrollerRecreateTimeout = null;
+    }
+
+    this.scrollerRecreateTimeout = setTimeout(function() {
+        that.scrollerRecreateTimeout = null;
+        that.scheduledScrollerRecreate = false;
+        viewer.helpers.createScroller();
+
+        setTimeout(function() {
+            viewer.helpers.destroyScrollerIfNeeded();
+        }, 500);
+    }, 500);
+};
+
+/**
+ * Set .DV-collection element's height to 1500 to prevent flickering
+ */
+DV.Elements.prototype.preventPageCollapse = function() {
+    this._viewer.$('.DV-page').height('1500px');
+    this.collection.css('height', '1500px');
+};
+/**
+ * Undo the changes made by `DV.Elements.prototype.preventPageCollapse`
+ */
+DV.Elements.prototype.undoPageCollapseFix = function() {
+    this._viewer.$('.DV-page').height('');
+    this.collection.css('height', '');
 };

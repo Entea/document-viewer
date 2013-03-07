@@ -164,6 +164,13 @@ DV.model.Pages.prototype = {
         this.imageWidth = image.width;
         this.needsRepositioning = true;
 
+        // a hack :S
+        this.viewer.elements.undoPageCollapseFix();
+        var that = this;
+        setTimeout(function() {
+            that.viewer.helpers.destroyScrollerIfNeeded();
+        }, 500);
+
         if (image.width < this.baseWidth) {
             // Not supposed to happen, but too-small images sometimes do.
             height *= (this.baseWidth / image.width);

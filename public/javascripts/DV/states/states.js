@@ -34,6 +34,7 @@ DV.Schema.states = {
         this.helpers.startCheckTimer();
         this.helpers.handleInitialState();
         _.defer(_.bind(this.helpers.autoZoomPage, this.helpers));
+        this.elements.preventPageCollapse();
     },
 
     ViewAnnotation: function () {
@@ -65,7 +66,10 @@ DV.Schema.states = {
         this.elements.updateScroller();
         this.helpers.jump(this.models.document.currentIndex());
 
-        this.elements.collection.css({'width': this.models.pages.width + 5});
+        this.elements.collection.css({width: this.models.pages.width + 5});
+        this.elements.collection.css({left: 0});
+        this.elements.undoPageCollapseFix();
+        this.helpers.createScroller();
 
         return true;
     },
@@ -101,6 +105,9 @@ DV.Schema.states = {
         this.events.loadAllTextPages();
 
         this.elements.collection.css({width: 'auto'});
+        this.elements.collection.css({left: 0});
+        this.elements.undoPageCollapseFix();
+        this.helpers.createScroller();
 
         return true;
     },

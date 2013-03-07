@@ -106,6 +106,7 @@ _.extend(DV.Schema.helpers, {
 
     destroyScrollerIfNeeded: function() {
         var viewer = this.viewer;
+
         if (viewer.elements && viewer.elements.scrlr && viewer.elements.scrlr.parent != undefined && !viewer.elements.scrlr.parent().find('.mCSB_scrollTools').is(':visible')) {
             viewer.$('.DV-pages').mCustomScrollbar('destroy');
             viewer.elements.scrlr = 'destroyed';

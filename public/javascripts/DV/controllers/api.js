@@ -350,11 +350,8 @@ DV.Api.prototype = {
         // Make sure that viewer repositions itself on next redraw
         pagesModel.needsRepositioning = true;
 
+        this.viewer.elements.preventPageCollapse();
         this.viewer.helpers.createScroller();
-        var viewer = this.viewer;
-        setTimeout(function() {
-            viewer.helpers.destroyScrollerIfNeeded();
-        }, 500);
 
         return newRotation;
     }
