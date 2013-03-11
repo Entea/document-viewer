@@ -81,36 +81,16 @@ _.extend(DV.Schema.helpers, {
     createScroller: function() {
         var viewer = this.viewer;
 
-        try {
-            this.viewer.$(".DV-pages").mCustomScrollbar("destroy");
-        } catch (e) {
-        }
-
         if (viewer.elements) {
             viewer.elements['scrlr'] = null;
         }
-        viewer.$(".DV-pages").mCustomScrollbar({
-            scrollInertia: 0,
-            scrollAmount: 20,
-            advanced: {
-                updateOnBrowserResize: true,
-                updateOnContentResize: true
-            },
-            callbacks: {
-                onScroll: function() {
-                    viewer.helpers.updatePageNumberOnTextView();
-                }
-            }
-        });
-    },
 
-    destroyScrollerIfNeeded: function() {
-        var viewer = this.viewer;
-
-        if (viewer.elements && viewer.elements.scrlr && viewer.elements.scrlr.parent != undefined && !viewer.elements.scrlr.parent().find('.mCSB_scrollTools').is(':visible')) {
-            viewer.$('.DV-pages').mCustomScrollbar('destroy');
-            viewer.elements.scrlr = 'destroyed';
-        }
+        viewer.$(".DV-pages").jScrollPane({
+            autoReinitialise: false,
+            verticalDragMinHeight: 20
+        }).bind('jsp-scroll-y', function() {
+            viewer.helpers.updatePageNumberOnTextView();
+        }).data('jsp').scrollToY(0);
     },
 
     // If there is no description, no navigation, and no sections, tighten up

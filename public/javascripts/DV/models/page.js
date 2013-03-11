@@ -167,9 +167,6 @@ DV.model.Pages.prototype = {
         // a hack :S
         this.viewer.elements.undoPageCollapseFix();
         var that = this;
-        setTimeout(function() {
-            that.viewer.helpers.destroyScrollerIfNeeded();
-        }, 500);
 
         if (image.width < this.baseWidth) {
             // Not supposed to happen, but too-small images sometimes do.
@@ -191,6 +188,7 @@ DV.model.Pages.prototype = {
             var scrollTop = this.viewer.elements.scrollerTop();
             this.viewer.elements.scrollerTop(scrollTop + diff);
         }
+        this.viewer.elements.reinitializeScroller();
     },
 
     adjustWidth: function() {
@@ -203,6 +201,9 @@ DV.model.Pages.prototype = {
      */
     getEffectiveWidth: function() {
         if (this.rotation % 2) {
+            if (this.imageWidth) {
+                return this.getPageWidth();
+            }
             return Math.min(this.zoomLevel + 5, this.width);
         }
         return this.zoomLevel + 5;

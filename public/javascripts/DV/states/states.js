@@ -108,6 +108,7 @@ DV.Schema.states = {
         this.elements.collection.css({left: 0});
         this.elements.undoPageCollapseFix();
         this.helpers.createScroller();
+        this.elements.updateZoom();
 
         return true;
     },

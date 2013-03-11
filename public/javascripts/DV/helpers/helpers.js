@@ -408,30 +408,21 @@ DV.Schema.helpers = {
     },
 
     shift: function (argHash, useScrollTo) {
-        var scrollerEl = this.elements.scroller();
-        var scrollTopNew = scrollerEl ? -(scrollerEl.position().top) + argHash.deltaY : 0;
-        var left = parseInt(this.elements.collection.css('left'));
-        var scrollLeftShift = left - argHash.deltaX;
-
-        if (argHash.deltaX != 0) {
-            // limits:
-            var leftMax = 0;
-            var leftMin = this.elements.window.width() - this.elements.collection.width();
-            if (leftMin > leftMax) {
-                leftMin = leftMax;
-            }
-            if (scrollLeftShift > leftMax) {
-                scrollLeftShift = leftMax;
-            }
-            if (scrollLeftShift < leftMin) {
-                scrollLeftShift = leftMin;
-            }
-
-            this.elements.collection.css('left', scrollLeftShift + 'px');
+        var api = this.elements.scrollerApi();
+        if (!api) {
+            return;
         }
 
-        if (scrollerEl) {
-            scrollerEl.css('top', Math.min(-scrollTopNew, 0));
+        var scrollTopNew = api.getContentPositionY() + argHash.deltaY;
+        var left = api.getContentPositionX() + argHash.deltaX;
+
+        // limits:
+        var leftMax = Math.max(0, this.elements.collection.width() - this.elements.window.width());
+        left = Math.min(left, leftMax);
+
+        if (api) {
+            api.scrollToY(scrollTopNew);
+            api.scrollToX(left);
         }
     },
 

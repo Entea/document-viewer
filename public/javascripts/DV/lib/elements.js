@@ -4,9 +4,6 @@ DV.Elements = function (viewer) {
     for (var i = 0, elemCount = elements.length; i < elemCount; i++) {
         this.getElement(elements[i]);
     }
-
-    this.scheduledScrollerRecreate = false;
-    this.scrollerRecreateTimeout = null;
 };
 
 // Get and store an element reference
@@ -14,35 +11,28 @@ DV.Elements.prototype.getElement = function (elementQuery, force) {
     this[elementQuery.name] = elementQuery.outsideOfViewer ? $(elementQuery.query) : this._viewer.$(elementQuery.query);
 };
 
-DV.Elements.prototype.scroller = function () {
-    if (this['scrlr'] == 'destroyed') {
-        return null;
-    }
-
-    if (this['scrlr'] == undefined || !this['scrlr'].length) {
-        this.getElement({name: 'scrlr', query: 'div.mCSB_container'});
-    }
-    return this['scrlr'];
+DV.Elements.prototype.scrollerApi = function () {
+    return this.window.data('jsp');
 };
 
 DV.Elements.prototype.scrollerTop = function (top) {
-    var el = this.scroller();
+    var api = this.scrollerApi();
     if (top == undefined) {
-        if (!el || !el.length) {
+        if (!api) {
             return 0;
         }
-        return Math.abs(el.position().top);
+        return api.getContentPositionY();
     } else {
-        if (!el || !el.length) {
+        if (!api) {
             return this;
         }
 
         if (this.isScrollerInitialized()) {
             if (this.isScrollerVisible()) {
-                this.window.mCustomScrollbar('scrollTo', Math.max(top, 0));
+                api.scrollToY(Math.max(top, 0));
             } else {
                 // when the scroller is not visible, force top to 0
-                this.window.mCustomScrollbar('scrollTo', 0);
+                api.scrollToY(0);
             }
         }
         return this;
@@ -50,13 +40,13 @@ DV.Elements.prototype.scrollerTop = function (top) {
 };
 
 DV.Elements.prototype.isScrollerVisible = function() {
-    return this.window.find('.mCSB_scrollTools').is(':visible');
+    return this.window.find('.jspVerticalBar:visible').length;
 };
 
 DV.Elements.prototype.isScrollerInitialized = function () {
     if (this.scrollInitialized == undefined) {
-        var el = this.scroller();
-        if (!el.next().find('.mCSB_dragger').length) {
+        var api = this.scrollerApi();
+        if (!api) {
             return false;
         }
 
@@ -68,47 +58,15 @@ DV.Elements.prototype.isScrollerInitialized = function () {
 
 DV.Elements.prototype.updateScroller = function () {
     if (this.isScrollerInitialized()) {
-        this.window.mCustomScrollbar('update');
-        this.collection.css('left', 0);
+        this.reinitializeScroller();
+        this._viewer.$('.jspPane').css('left', 0);
     }
 };
 
 DV.Elements.prototype.updateZoom = function (level) {
     this.updateScroller();
     this.zoomChange && this.zoomChange(this._viewer, level);
-
-    if (!this.scheduledScrollerRecreate) {
-        this.scheduledScrollerRecreate = true;
-        this.recreateScrollerIfNeeded();
-    }
-};
-
-/**
- * Recreates the scroller, and destroys if it's not needed.
- */
-DV.Elements.prototype.recreateScrollerIfNeeded = function() {
-    if (this.scheduledScrollerRecreate) {
-        return;
-    }
-
-    // destroy the scroller
-    var viewer = this._viewer;
-    var that = this;
-
-    if (this.scrollerRecreateTimeout !== null) {
-        clearTimeout(this.scrollerRecreateTimeout);
-        this.scrollerRecreateTimeout = null;
-    }
-
-    this.scrollerRecreateTimeout = setTimeout(function() {
-        that.scrollerRecreateTimeout = null;
-        that.scheduledScrollerRecreate = false;
-        viewer.helpers.createScroller();
-
-        setTimeout(function() {
-            viewer.helpers.destroyScrollerIfNeeded();
-        }, 500);
-    }, 500);
+    this.reinitializeScroller();
 };
 
 /**
@@ -124,4 +82,17 @@ DV.Elements.prototype.preventPageCollapse = function() {
 DV.Elements.prototype.undoPageCollapseFix = function() {
     this._viewer.$('.DV-page').height('');
     this.collection.css('height', '');
+};
+
+DV.Elements.prototype.reinitializeScroller = function() {
+    var that = this;
+    var api = this.scrollerApi();
+    if (api) {
+        api.reinitialise();
+        if ('ViewDocument' == this._viewer.state) {
+            if (!this._viewer.models.pages.imageWidth) {
+                api.scrollToY(0);
+            }
+        }
+    }
 };

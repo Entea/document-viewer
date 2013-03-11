@@ -36,8 +36,8 @@ DV.DragReporter.prototype.oldPositionUpdater   = function(){
 DV.DragReporter.prototype.stop         = function() {
     this.toWatch.removeClass(this.dragClassName);
     this.toWatch.unbind('mousemove');
-    var scroller = this.viewer.elements.scroller();
-    var top = scroller ? -(scroller.position().top) : 0;
+    var api = this.viewer.elements.scrollerApi();
+    var top = api ? api.getContentPositionY() : 0;
     this.viewer.elements.scrollerTop(top);
 };
 

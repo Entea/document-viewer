@@ -346,7 +346,7 @@ DV.Api.prototype = {
         this.viewer.pageSet.simpleReflowPages();
 
         pagesModel.adjustWidth();
-        this.viewer.elements.collection.css('left', 0);
+        this.viewer.$('.jspPane').css('left', 0);
         // Make sure that viewer repositions itself on next redraw
         pagesModel.needsRepositioning = true;
 
