@@ -75,7 +75,7 @@ _.extend(DV.Schema.helpers, {
             containerEl.find('*').unbind();
         }
 
-        this.createScroller();
+        //this.createScroller();
     },
 
     createScroller: function() {

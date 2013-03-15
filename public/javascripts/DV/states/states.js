@@ -63,13 +63,13 @@ DV.Schema.states = {
         this.helpers.toggleContent('viewDocument');
 
         this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
-        this.elements.updateScroller();
-        this.helpers.jump(this.models.document.currentIndex());
 
         this.elements.collection.css({width: this.models.pages.width + 5});
         this.elements.collection.css({left: 0});
-        this.elements.undoPageCollapseFix();
+//        this.elements.undoPageCollapseFix();
         this.helpers.createScroller();
+//        this.elements.updateScroller();
+//        this.helpers.jump(this.models.document.currentIndex());
 
         return true;
     },
