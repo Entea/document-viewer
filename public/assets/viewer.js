@@ -1336,42 +1336,50 @@ DV.Annotation.prototype.remove = function(){
   DV.jQuery('#DV-annotation-'+this.id).remove();
 };
 
-DV.DragReporter = function(viewer, toWatch, dispatcher, argHash) {
-  this.viewer         = viewer;
-  this.dragClassName  = 'DV-dragging';
-  this.sensitivityY   = 1.0;
-  this.sensitivityX   = 1.0;
-  this.oldPageY       = 0;
+DV.DragReporter = function (viewer, toWatch, dispatcher, argHash) {
+    this.viewer = viewer;
+    this.dragClassName = 'DV-dragging';
+    this.sensitivityY = 1.0;
+    this.sensitivityX = 1.0;
+    this.oldPageY = 0;
 
-  _.extend(this, argHash);
+    _.extend(this, argHash);
 
-  this.dispatcher             = dispatcher;
-  this.toWatch                = this.viewer.$(toWatch);
-  this.boundReporter          = _.bind(this.mouseMoveReporter,this);
-  this.boundMouseUpReporter   = _.bind(this.mouseUpReporter,this);
-  this.boundMouseDownReporter = _.bind(this.mouseDownReporter,this);
+    this.dispatcher = dispatcher;
+    this.toWatch = this.viewer.$(toWatch);
+    this.boundReporter = _.bind(this.mouseMoveReporter, this);
+    this.boundMouseUpReporter = _.bind(this.mouseUpReporter, this);
+    this.boundMouseDownReporter = _.bind(this.mouseDownReporter, this);
 
-  this.setBinding();
+    this.enabled = true;
+
+    this.setBinding();
 };
 
-DV.DragReporter.prototype.shouldIgnore = function(e) {
-  if (!this.ignoreSelector) return false;
-  var el = this.viewer.$(e.target);
-  return el.parents().is(this.ignoreSelector) || el.is(this.ignoreSelector);
+DV.DragReporter.prototype.shouldIgnore = function (e) {
+    if (!this.ignoreSelector) {
+        return false;
+    }
+    if (!this.enabled) {
+        return true;
+    }
+
+    var el = this.viewer.$(e.target);
+    return el.parents().is(this.ignoreSelector) || el.is(this.ignoreSelector);
 };
 
-DV.DragReporter.prototype.mouseUpReporter     = function(e){
-  if (this.shouldIgnore(e)) return true;
-  e.preventDefault();
-  clearInterval(this.updateTimer);
-  this.stop();
+DV.DragReporter.prototype.mouseUpReporter = function (e) {
+    if (this.shouldIgnore(e)) return true;
+    e.preventDefault();
+    clearInterval(this.updateTimer);
+    this.stop();
 };
 
-DV.DragReporter.prototype.oldPositionUpdater   = function(){
-  this.oldPageY = this.pageY;
+DV.DragReporter.prototype.oldPositionUpdater = function () {
+    this.oldPageY = this.pageY;
 };
 
-DV.DragReporter.prototype.stop         = function() {
+DV.DragReporter.prototype.stop = function () {
     this.toWatch.removeClass(this.dragClassName);
     this.toWatch.unbind('mousemove');
     var api = this.viewer.elements.scrollerApi();
@@ -1379,44 +1387,44 @@ DV.DragReporter.prototype.stop         = function() {
     this.viewer.elements.scrollerTop(top);
 };
 
-DV.DragReporter.prototype.setBinding         = function(){
-  this.toWatch.mouseup(this.boundMouseUpReporter);
-  this.toWatch.mousedown(this.boundMouseDownReporter);
+DV.DragReporter.prototype.setBinding = function () {
+    this.toWatch.mouseup(this.boundMouseUpReporter);
+    this.toWatch.mousedown(this.boundMouseDownReporter);
 };
 
-DV.DragReporter.prototype.unBind           = function(){
-  this.toWatch.unbind('mouseup',this.boundMouseUpReporter);
-  this.toWatch.unbind('mousedown',this.boundMouseDownReporter);
+DV.DragReporter.prototype.unBind = function () {
+    this.toWatch.unbind('mouseup', this.boundMouseUpReporter);
+    this.toWatch.unbind('mousedown', this.boundMouseDownReporter);
 };
 
-DV.DragReporter.prototype.destroy           = function(){
-  this.unBind();
-  this.toWatch = null;
+DV.DragReporter.prototype.destroy = function () {
+    this.unBind();
+    this.toWatch = null;
 };
 
-DV.DragReporter.prototype.mouseDownReporter   = function(e){
-   if (this.shouldIgnore(e)) return true;
-  e.preventDefault();
-  this.pageY    = e.pageY;
-  this.pageX    = e.pageX;
-  this.oldPageY = e.pageY;
+DV.DragReporter.prototype.mouseDownReporter = function (e) {
+    if (this.shouldIgnore(e)) return true;
+    e.preventDefault();
+    this.pageY = e.pageY;
+    this.pageX = e.pageX;
+    this.oldPageY = e.pageY;
 
-  this.updateTimer = setInterval(_.bind(this.oldPositionUpdater,this),1200);
-  this.toWatch.addClass(this.dragClassName);
-  this.toWatch.mousemove(this.boundReporter);
+    this.updateTimer = setInterval(_.bind(this.oldPositionUpdater, this), 1200);
+    this.toWatch.addClass(this.dragClassName);
+    this.toWatch.mousemove(this.boundReporter);
 };
 
-DV.DragReporter.prototype.mouseMoveReporter     = function(e){
-  if (this.shouldIgnore(e)) return true;
-  e.preventDefault();
-  var deltaX      = Math.round(this.sensitivityX * (this.pageX - e.pageX));
-  var deltaY      = Math.round(this.sensitivityY * (this.pageY - e.pageY));
-  var directionX  = (deltaX > 0) ? 'right' : 'left';
-  var directionY  = (deltaY > 0) ? 'down' : 'up';
-  this.pageY      = e.pageY;
-  this.pageX      = e.pageX;
-  if (deltaY === 0 && deltaX === 0) return;
-  this.dispatcher({ event: e, deltaX: deltaX, deltaY: deltaY, directionX: directionX, directionY: directionY });
+DV.DragReporter.prototype.mouseMoveReporter = function (e) {
+    if (this.shouldIgnore(e)) return true;
+    e.preventDefault();
+    var deltaX = Math.round(this.sensitivityX * (this.pageX - e.pageX));
+    var deltaY = Math.round(this.sensitivityY * (this.pageY - e.pageY));
+    var directionX = (deltaX > 0) ? 'right' : 'left';
+    var directionY = (deltaY > 0) ? 'down' : 'up';
+    this.pageY = e.pageY;
+    this.pageX = e.pageX;
+    if (deltaY === 0 && deltaX === 0) return;
+    this.dispatcher({ event: e, deltaX: deltaX, deltaY: deltaY, directionX: directionX, directionY: directionY });
 };
 
 DV.Elements = function (viewer) {
@@ -1486,7 +1494,8 @@ DV.Elements.prototype.updateScroller = function () {
 
 DV.Elements.prototype.updateZoom = function (level) {
     this.updateScroller();
-    this.zoomChange && this.zoomChange(this._viewer, level);
+    var zoomLevel = _.indexOf(this._viewer.models.document.ZOOM_RANGES, level);
+    this._viewer.zoomChange && this._viewer.zoomChange(this._viewer, zoomLevel);
     this.reinitializeScroller();
 };
 
@@ -1494,13 +1503,21 @@ DV.Elements.prototype.updateZoom = function (level) {
  * Set .DV-collection element's height to 1500 to prevent flickering
  */
 DV.Elements.prototype.preventPageCollapse = function() {
-    this._viewer.$('.DV-page').height('1500px');
     this.collection.css('height', '1500px');
+    this._viewer.$('.DV-page').height('1500px');
 };
 /**
  * Undo the changes made by `DV.Elements.prototype.preventPageCollapse`
  */
 DV.Elements.prototype.undoPageCollapseFix = function() {
+    if (this._viewer.state == 'ViewDocument' && $('.DV-page img[src]').length == 0) {
+        var that = this;
+        setTimeout(function() {
+            that.undoPageCollapseFix();
+        }, 100);
+        return;
+    }
+
     this._viewer.$('.DV-page').height('');
     this.collection.css('height', '');
 };
@@ -3456,16 +3473,12 @@ DV.Schema.helpers = {
             },
             change: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
-                if (viewer.options.onZoomChange) {
-                    viewer.options.onZoomChange(sliding, d.value, boundZoom, context.models.document.ZOOM_RANGES);
-                }
                 // reset sliding flag
                 sliding = false;
             }
         });
 
         // next/previous
-        var history = viewer.history;
         var compiled = viewer.compiled;
         compiled.next = this.events.compile('next');
         compiled.previous = this.events.compile('previous');
@@ -4133,7 +4146,7 @@ _.extend(DV.Schema.helpers, {
             containerEl.find('*').unbind();
         }
 
-        this.createScroller();
+        //this.createScroller();
     },
 
     createScroller: function() {
@@ -4669,13 +4682,13 @@ DV.Schema.states = {
         this.helpers.toggleContent('viewDocument');
 
         this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
-        this.elements.updateScroller();
-        this.helpers.jump(this.models.document.currentIndex());
 
         this.elements.collection.css({width: this.models.pages.width + 5});
         this.elements.collection.css({left: 0});
-        this.elements.undoPageCollapseFix();
+//        this.elements.undoPageCollapseFix();
         this.helpers.createScroller();
+//        this.elements.updateScroller();
+//        this.helpers.jump(this.models.document.currentIndex());
 
         return true;
     },
@@ -5116,6 +5129,10 @@ DV.DocumentViewer = function(options) {
   this.dragReporter       = null;
   this.compiled           = {};
   this.tracker            = {};
+
+  if (options.onZoomChange) {
+      this.zoomChange = options.onZoomChange;
+  }
 
   this.onStateChangeCallbacks = [];
 

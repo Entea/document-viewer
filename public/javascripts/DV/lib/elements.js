@@ -65,7 +65,8 @@ DV.Elements.prototype.updateScroller = function () {
 
 DV.Elements.prototype.updateZoom = function (level) {
     this.updateScroller();
-    this.zoomChange && this.zoomChange(this._viewer, level);
+    var zoomLevel = _.indexOf(this._viewer.models.document.ZOOM_RANGES, level);
+    this._viewer.zoomChange && this._viewer.zoomChange(this._viewer, zoomLevel);
     this.reinitializeScroller();
 };
 
@@ -73,13 +74,21 @@ DV.Elements.prototype.updateZoom = function (level) {
  * Set .DV-collection element's height to 1500 to prevent flickering
  */
 DV.Elements.prototype.preventPageCollapse = function() {
-    this._viewer.$('.DV-page').height('1500px');
     this.collection.css('height', '1500px');
+    this._viewer.$('.DV-page').height('1500px');
 };
 /**
  * Undo the changes made by `DV.Elements.prototype.preventPageCollapse`
  */
 DV.Elements.prototype.undoPageCollapseFix = function() {
+    if (this._viewer.state == 'ViewDocument' && $('.DV-page img[src]').length == 0) {
+        var that = this;
+        setTimeout(function() {
+            that.undoPageCollapseFix();
+        }, 100);
+        return;
+    }
+
     this._viewer.$('.DV-page').height('');
     this.collection.css('height', '');
 };

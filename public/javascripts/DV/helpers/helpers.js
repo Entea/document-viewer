@@ -36,16 +36,12 @@ DV.Schema.helpers = {
             },
             change: function (el, d) {
                 boundZoom(context.models.document.ZOOM_RANGES[parseInt(d.value, 10)]);
-                if (viewer.options.onZoomChange) {
-                    viewer.options.onZoomChange(sliding, d.value, boundZoom, context.models.document.ZOOM_RANGES);
-                }
                 // reset sliding flag
                 sliding = false;
             }
         });
 
         // next/previous
-        var history = viewer.history;
         var compiled = viewer.compiled;
         compiled.next = this.events.compile('next');
         compiled.previous = this.events.compile('previous');

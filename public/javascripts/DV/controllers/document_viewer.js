@@ -27,6 +27,10 @@ DV.DocumentViewer = function(options) {
   this.compiled           = {};
   this.tracker            = {};
 
+  if (options.onZoomChange) {
+      this.zoomChange = options.onZoomChange;
+  }
+
   this.onStateChangeCallbacks = [];
 
   this.events     = _.extend(this.events, {
