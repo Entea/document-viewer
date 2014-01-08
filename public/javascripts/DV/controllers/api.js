@@ -342,17 +342,29 @@ DV.Api.prototype = {
     rotatePage: function () {
         var pagesModel = this.viewer.models.pages;
         var newRotation = pagesModel.rotatePage();
+        this._afterRotation();
+
+        return newRotation;
+    },
+    rotatePageCCW: function() {
+        var pagesModel = this.viewer.models.pages;
+        var newRotation = pagesModel.rotatePageCCW();
+        this._afterRotation();
+
+        return newRotation;
+    },
+    _afterRotation: function() {
+        var pagesModel = this.viewer.models.pages;
         pagesModel.resize();
+        this.viewer.models.document.computeOffsets();
         this.viewer.pageSet.simpleReflowPages();
 
         pagesModel.adjustWidth();
         this.viewer.$('.jspPane').css('left', 0);
         // Make sure that viewer repositions itself on next redraw
-        pagesModel.needsRepositioning = true;
+        // pagesModel.needsRepositioning = true;
 
-        this.viewer.elements.preventPageCollapse();
+        this.viewer.elements.undoPageCollapseFix();
         this.viewer.helpers.createScroller();
-
-        return newRotation;
     }
 };

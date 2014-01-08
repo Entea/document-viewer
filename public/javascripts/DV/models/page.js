@@ -15,16 +15,15 @@ DV.model.Pages = function (viewer) {
     this.pageNoteHeights = [];
 
     // In pixels.
-    this.BASE_WIDTH = 1000;
-    this.BASE_HEIGHT = 1300;
+    this.BASE_WIDTH = 800;
+    this.BASE_HEIGHT = 1000;
 
     // Factors for scaling from image size to zoomlevel.
     this.SCALE_FACTORS = {
-        '600': 0.6,
-        '800': 0.8,
-        '1000': 1.0,
-        '1200': 0.8,
-        '1500': 1.0
+        '600': 0.75,
+        '800': 1.0,
+        '1000': 0.83,
+        '1200': 1.0
     };
 
     // For viewing page text.
@@ -54,7 +53,6 @@ DV.model.Pages.prototype = {
         var url = this.viewer.schema.document.resources.page.image;
         var size = this.zoomLevel > this.BASE_WIDTH ? 'large' : 'normal';
         var pageNumber = index + 1;
-        var rotation = (this.rotation == undefined) ? 0 : this.rotation;
 
         if (this.viewer.schema.document.resources.page.zeropad) {
             pageNumber = this.zeroPad(pageNumber, 5);
@@ -62,17 +60,18 @@ DV.model.Pages.prototype = {
 
         url = url.replace(/\{size\}/, size);
         url = url.replace(/\{page\}/, pageNumber);
-        url = url.replace(/\{rotation\}/, rotation);
 
         return url;
     },
 
     rotatePage: function() {
-        this.rotation++;
+        this.rotation = (this.rotation + 1) % 4;
 
-        if (this.rotation % 4 == 0) {
-            this.rotation = 0;
-        }
+        return this.rotation;
+    },
+    rotatePageCCW: function() {
+        this.rotation = (this.rotation - 1 + 4) % 4;
+
         return this.rotation;
     },
 
@@ -124,21 +123,10 @@ DV.model.Pages.prototype = {
             var scale = this.scaleFactor();
 
             if (this.imageWidth) {
-                if (this.rotation % 2) {
-                    this.height = this.zoomLevel;
-                    this.width = this.imageWidth * (this.height / this.imageHeight);
-                } else {
-                    this.width = this.zoomLevel;
-                    this.height = this.width * (this.imageHeight / this.imageWidth);
-                }
+                this.width = this.zoomLevel;
+                this.height = this.width * (this.imageHeight / this.imageWidth);
             } else {
-                if (this.rotation % 2) {
-                    this.height = zoomLevel;
-                    //this.width = Math.round(this.baseWidth * scale);
-                } else {
-                    //this.height = Math.round(this.baseHeight * scale);
-                    this.width = zoomLevel;
-                }
+                this.width = zoomLevel;
             }
             this.averageHeight = Math.round(this.averageHeight * scale);
         }
@@ -166,7 +154,6 @@ DV.model.Pages.prototype = {
 
         // a hack :S
         this.viewer.elements.undoPageCollapseFix();
-        var that = this;
 
         if (image.width < this.baseWidth) {
             // Not supposed to happen, but too-small images sometimes do.
@@ -192,7 +179,7 @@ DV.model.Pages.prototype = {
     },
 
     adjustWidth: function() {
-        var width = this.getPageWidth();
+        var width = this.rotation % 2 == 1 ? this.height : this.getPageWidth();
         this.viewer.elements.collection.width(width);
     },
 
@@ -204,7 +191,7 @@ DV.model.Pages.prototype = {
             if (this.imageWidth) {
                 return this.getPageWidth();
             }
-            return Math.min(this.zoomLevel + 5, this.width);
+            return Math.round(Math.min(this.zoomLevel + 5, this.width));
         }
         return this.zoomLevel + 5;
     },
@@ -219,7 +206,7 @@ DV.model.Pages.prototype = {
         var realHeight = this.pageHeights[pageIndex];
         if (realHeight) {
             if (this.rotation % 2) {
-                return Math.min(realHeight * this.scaleFactor(), this.height);
+                return Math.round(Math.min(realHeight * this.scaleFactor(), this.height));
             }
             return Math.round(realHeight * this.scaleFactor());
         }

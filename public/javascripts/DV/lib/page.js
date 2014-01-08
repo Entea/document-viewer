@@ -241,23 +241,29 @@ DV.Page.prototype.loadImage = function (argHash) {
 };
 
 DV.Page.prototype.sizeImage = function () {
-//    var width = this.model_pages.getPageWidth();
-//    var height = this.model_pages.getPageHeight(this.index);
-
     var width = this.model_pages.width;
     var height = this.model_pages.height;
-
-    // Resize the cover.
-    this.coverEl.css({width: width, height: height});
+    var rotation = this.model_pages.rotation;
 
     // Resize the image.
     this.pageImageEl.css({width: width, height: height});
+    this.pageImageEl.removeClass('rotation1 rotation2 rotation3').addClass('rotation' + rotation);
+
+    if (rotation % 2 == 1) {
+        var t = width;
+        width = height;
+        height = t;
+    }
+
+    var dimensions = {height: height, width: width};
+    // Resize the cover.
+    this.coverEl.css(dimensions);
 
     // Resize the page container.
-    this.el.css({height: height, width: width});
+    this.el.css(dimensions);
 
     // Resize the page.
-    this.pageEl.css({height: height, width: width});
+    this.pageEl.css(dimensions);
 };
 
 // draw the image and update surrounding image containers with the right size

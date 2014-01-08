@@ -91,7 +91,7 @@ DV.Schema.events = {
                 }
             }
             me.elements.updateScroller();
-            me.openTextPage(me.viewer.models.document.currentIndex())
+            me.openTextPage(me.viewer.models.document.currentIndex());
             if (afterLoad) afterLoad.call(me.helpers);
         };
 

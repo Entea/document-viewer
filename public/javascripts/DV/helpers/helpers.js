@@ -12,7 +12,7 @@ DV.Schema.helpers = {
         var value = _.indexOf(doc.ZOOM_RANGES, doc.zoomLevel);
         var viewer = this.viewer;
 
-        if (viewer.options.sliderZoomLevel > 0 && viewer.options.sliderZoomLevel < 5) {
+        if (viewer.options.sliderZoomLevel > 0 && viewer.options.sliderZoomLevel < 4) {
             value = viewer.options.sliderZoomLevel;
         }
 
@@ -26,7 +26,7 @@ DV.Schema.helpers = {
         viewer.slider = $('.DV-zoomBox').slider({
             step: 1,
             min: 0,
-            max: 4,
+            max: 3,
             orientation: "vertical",
             isRTL: true,
             value: value,

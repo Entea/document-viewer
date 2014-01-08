@@ -10,8 +10,7 @@ DV.model.Document = function (viewer) {
     this.totalDocumentHeight = 0;
     this.totalPages = 0;
     this.additionalPaddingOnPage = 0;
-//  this.ZOOM_RANGES               = [500, 700, 800, 900, 1000];
-    this.ZOOM_RANGES = [600, 800, 1000, 1200, 1500];
+    this.ZOOM_RANGES = [600, 800, 1000, 1200];
 
     var data = this.viewer.schema.data;
 
@@ -75,13 +74,14 @@ DV.model.Document.prototype = {
         var len = this.totalPages;
         var diff = 0;
         var scrollPos = this.viewer.elements.scrollerTop();
+        var rotation = this.viewer.models.pages.rotation;
 
         for (var i = 0; i < len; i++) {
             if (annotationModel.offsetsAdjustments[i]) {
                 adjustedOffset = annotationModel.offsetsAdjustments[i];
             }
 
-            var pageHeight = this.viewer.models.pages.getPageHeight(i);
+            var pageHeight = rotation % 2 == 1 ? this.viewer.models.pages.getPageWidth() : this.viewer.models.pages.getPageHeight(i);
             var previousOffset = this.offsets[i] || 0;
             var h = this.offsets[i] = adjustedOffset + totalDocHeight;
 
