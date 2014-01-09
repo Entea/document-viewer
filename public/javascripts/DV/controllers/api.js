@@ -339,16 +339,16 @@ DV.Api.prototype = {
         this.resetPageText();
     },
 
-    rotatePage: function () {
+    rotateRight: function () {
         var pagesModel = this.viewer.models.pages;
-        var newRotation = pagesModel.rotatePage();
+        var newRotation = pagesModel.getNextRightRotation();
         this._afterRotation();
 
         return newRotation;
     },
-    rotatePageCCW: function() {
+    rotateLeft: function() {
         var pagesModel = this.viewer.models.pages;
-        var newRotation = pagesModel.rotatePageCCW();
+        var newRotation = pagesModel.getNextLeftRotation();
         this._afterRotation();
 
         return newRotation;
@@ -361,8 +361,6 @@ DV.Api.prototype = {
 
         pagesModel.adjustWidth();
         this.viewer.$('.jspPane').css('left', 0);
-        // Make sure that viewer repositions itself on next redraw
-        // pagesModel.needsRepositioning = true;
 
         this.viewer.elements.undoPageCollapseFix();
         this.viewer.helpers.createScroller();

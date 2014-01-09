@@ -64,12 +64,12 @@ DV.model.Pages.prototype = {
         return url;
     },
 
-    rotatePage: function() {
+    getNextRightRotation: function() {
         this.rotation = (this.rotation + 1) % 4;
 
         return this.rotation;
     },
-    rotatePageCCW: function() {
+    getNextLeftRotation: function() {
         this.rotation = (this.rotation - 1 + 4) % 4;
 
         return this.rotation;

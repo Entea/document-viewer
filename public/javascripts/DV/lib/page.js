@@ -247,12 +247,13 @@ DV.Page.prototype.sizeImage = function () {
 
     // Resize the image.
     this.pageImageEl.css({width: width, height: height});
-    this.pageImageEl.removeClass('rotation1 rotation2 rotation3').addClass('rotation' + rotation);
+    this.pageImageEl.removeClass('rotate-90-degreees rotate-180-degreees rotate-270-degreees');
+    this.pageImageEl.addClass('rotate-' + rotation * 90 + '-degreees');
 
     if (rotation % 2 == 1) {
-        var t = width;
+        var temp = width;
         width = height;
-        height = t;
+        height = temp;
     }
 
     var dimensions = {height: height, width: width};

@@ -1,3 +1,5 @@
+DV.ZOOM_RANGES = [600, 800, 1000, 1200];
+
 DV.model.Document = function (viewer) {
     this.viewer = viewer;
 
@@ -10,7 +12,7 @@ DV.model.Document = function (viewer) {
     this.totalDocumentHeight = 0;
     this.totalPages = 0;
     this.additionalPaddingOnPage = 0;
-    this.ZOOM_RANGES = [600, 800, 1000, 1200];
+    this.ZOOM_RANGES = DV.ZOOM_RANGES;
 
     var data = this.viewer.schema.data;
 
