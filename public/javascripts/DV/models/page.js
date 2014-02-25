@@ -136,7 +136,7 @@ DV.model.Pages.prototype = {
         if (this.viewer.state == 'ViewDocument') {
             this.viewer.elements.collection.css({width: this.width + padding });
         }
-        this.viewer.$('.DV-textContents').css({'font-size': this.zoomLevel * 0.02 + 'px'});
+
         this.adjustWidth();
 
         if (this.needsRepositioning) {
