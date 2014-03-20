@@ -81,26 +81,18 @@
 }
 
 .DV-searchMatch{
-  background-color:#f5f5e5;
-  -moz-box-shadow: 0 1px 5px #999;
-  -webkit-box-shadow: 0 1px 5px #999;
-  padding: 1px;
-  border:1px solid #ffa;
-  color:#000;
+    background-color:#ffff00;
+    padding: 1px;
+    border:1px solid #ffa;
+    color:#000;
 }
 
 .DV-highlightedMatch{
-  background: #f1e90f url(../../../images/DV/embed/highlight.gif) repeat-x 0 bottom;
-  padding: 3px 3px 2px;
-  -moz-border-radius: 3px;
-  background-color:#fff;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-box-shadow: 0 0 5px #666;
-  -webkit-box-shadow: 0 0 5px #666;
-  border: 1px solid #f5e800;
-  padding: 1px;
-  color:#000;
+    padding: 3px 3px 2px;
+    background-color:#ffff00;
+    border: 1px solid #666;
+    padding: 1px;
+    color:#000;
 }
 
 .DV-closeSearch{
